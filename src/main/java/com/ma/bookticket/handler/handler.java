@@ -16,6 +16,7 @@ public class handler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         this.strictInsertFill(metaObject, "order_create_time", Date.class,new Date());
+        this.strictInsertFill(metaObject, "trips_delete_flag", Integer.class,0);
         //this.strictInsertFill(metaObject, "order_update_time", Date.class,new Date());
     }
 
