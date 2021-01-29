@@ -52,7 +52,7 @@
                         <a href="register.html" th:href="@{/user/register}" style="position: absolute;right: 30px;bottom: 10px;">注 册</a>
                     </div>
 
-                    <div class="ui success mini message"></div>
+                    <div class="ui error mini message"></div>
                     <div class="ui mini negative message" th:unless="${#strings.isEmpty(message)}" th:text="${message}">
                         用户名和密码错误
                     </div>
