@@ -31,7 +31,7 @@ public class TaskConfig {
      */
 
     @Async
-    @Scheduled(cron = "0 0 0 * * ? *")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void trips_delte_task() {
         int count=0;        //记录删除条数
         count=tripsService.deleteEveryDay();
