@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="../../static/css/core.css" th:href="@{/css/core.css}">
+    <link type="text/css" rel="stylesheet" href="../../static/css/home.css" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+
+</head>
+<body>
+
+<div class="ydc-content-slide ydc-body">
+    <div class="ydc-flex">
+        <div class="ydc-column ydc-column-8">
+            <div class="ydc-release-content">
+                <div class="ydc-tabPanel ydc-tabPanel-release">
+                    <div class="ydc-release-tab-head">
+                        <ul>
+                            <li class="hit">更改密码</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="m-container-small m-padded-tb-massive" style="max-width: 30em !important;">
+    <div class="ur container">
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <form class="ui large form" method="post" action="#" id="updatePwd" th:action="@{/user/UpdatePwd}">
+                    <div class="ui  segment" style="position: relative;">
+                        <div class="field ">
+                            <div class="ui left icon input">
+                                <i class="envelope outline icon"></i>
+                                <input readonly="" type="text" id="email" name="email" autocomplete="off"  th:value="${session.user_email}">
+                            </div>
+                        </div>
+                        <div class="field ">
+                            <div class="ui left icon input">
+                                <button id="sendCheckCode" type="button" class="ui button">获取验证码</button>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="comment icon"></i>
+                                <input type="text" autocomplete="off" name="verification_code" placeholder="验证码">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" autocomplete="off" name="password" placeholder="新密码">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" autocomplete="off" name="passwords" placeholder="确认新密码">
+                            </div>
+                        </div>
+
+                        <button class="ui teal submit button">确认更改</button>
+                    </div>
+
+                    <div class="ui error mini message"></div>
+                    <div class="ui mini negative message" th:unless="${#strings.isEmpty(message)}" th:text="${message}">
+                        失败！！！
+                    </div>
+                    <div class="ui mini success message" th:unless="${#strings.isEmpty(success_message)}" th:text="${success_message}">
+                        成功！！！
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../static/js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script>
+    $("#sendCheckCode").click(function () {
+        $.ajax({
+            type: "get",
+            url: "/user/getUpdateCheckCode?email="+$('#email').val(),
+            dataType: "json",
+            success(data){
+                console.log(data);
+            }
+        });
+        //提示发送验证码了
+        alert("验证码发送中！！！");
+    });
+
+    $('.ui.form').form({
+        on :'blur',
+        fields: {
+            verification_code: {
+                identifier: 'verification_code',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入验证码'
+                }]
+            },
+            password: {
+                identifier: 'password',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入密码'
+                },{
+                    type: 'maxLength[8]',
+                    prompt: '密码不要超过8个字符'
+                }]
+            },
+            passwords:{
+                identifier: 'passwords',
+                rules:[{
+                    type: 'match[password]',
+                    prompt: '两次输入的密码不相同'
+                }]
+            }
+        }
+    });
+</script>
+</body>
+</html>

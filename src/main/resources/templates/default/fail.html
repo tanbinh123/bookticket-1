@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抢票失败</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!-- 导航 -->
+<nav class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+    <div class="ui container">
+        <div class="ui inverted secondary stackable menu">
+            <h2 class="ui teal header item"><img src="../../static/images/logo.png" th:src="@{/images/logo.png}"></h2>
+            <a href="index.html" class="m-item item m-mobile-hide" th:href="@{/}"><i class="home icon"></i>首页</a>
+            <a href="snatch.html" class="m-item item m-mobile-hide" th:href="@{/discount}"><i class="idea icon"></i>折扣专场</a>
+            <a href="about.html" class="m-item item m-mobile-hide" th:href="@{/about}"><i class="info icon"></i>关于我们</a>
+            <div class="m-item right item m-mobile-hide menu" th:if="${session.username} != null">
+                <div class="ui dropdown item">
+                    <div class="text">
+                        <img src="https://picsum.photos/id/1025/100/100" class="ui avatar image">
+                        <span th:text="${session.username}">HuAir</span>
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a href="#" class="item" th:href="@{/user/UserCenter}">个人中心</a>
+                        <a href="../user/login.html" th:href="@{/user/logout}" class="item">注销</a>
+                    </div>
+                </div>
+            </div>
+            <div class="m-item right item m-mobile-hide menu" th:if="${session.username} == null">
+                <div class="ui dropdown item">
+                    <div class="text">
+                        <a href="#" th:href="@{/user}" class="item">请登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+<!-- 中间内容 -->
+<div class="m-container m-padded-tb-large">
+
+    不好意思 您抢不到票！！！
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!-- 底部 -->
+<footer class="ui inverted vertical segment ">
+    <div class="ui center aligned container">
+        <div class="ui inverted divided stackable grid">
+            <div class="five wide column">
+                <div class="ui inverted link list">
+                    <div class="item">
+                        <img src="../../static/images/wechat.jpg" th:src="@{/images/wechat.jpg}" class="ui rounded image" alt="" style="width: 110px;">
+                    </div>
+                </div>
+            </div>
+            <div class="five wide column">
+                <h4 class="ui inverted header">联系我</h4>
+                <div class="ui inverted link list">
+                    <a href="#" class="item m-text-thin">Email:437205418@qq.com</a>
+                    <a href="#" class="item m-text-thin">QQ:437205418</a>
+                </div>
+            </div>
+            <div class="six wide column">
+                <h4 class="ui inverted header">1704第四组</h4>
+                <p>机票预订系统</p>
+            </div>
+        </div>
+        <div class="ui inverted section divider"></div>
+        <p class="m-text-spaced">Copyright © 2017 - 2021 HuAri 1704 by JIAYING</p>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script>
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+    // 鼠标放在qq图标上面
+    $('.qq').popup();
+
+    // 鼠标放在wechat图标上面
+    $('.wechat').popup({
+        popup: $('.wechat-qr'),
+        position: 'bottom center'
+    });
+
+</script>
+</body>
+</html>

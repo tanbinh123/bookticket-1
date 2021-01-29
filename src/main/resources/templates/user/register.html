@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+    <style>
+        .error{
+            color: #b91a14;
+        }
+    </style>
+</head>
+<body>
+
+<br>
+<br>
+<br>
+<div class="m-container-small m-padded-tb-massive" style="max-width: 30em !important;">
+    <div class="ur container">
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <h2 class="ui teal image header">
+                    <div class="content">
+                        用户注册
+                    </div>
+                </h2>
+                <form class="ui large form" method="post" action="#" id="loginform" th:action="@{/user/register}">
+                    <div class="ui  segment" style="position: relative;">
+                        <div class="field ">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" name="username" autocomplete="off" placeholder="用户名">
+                            </div>
+                        </div>
+                        <div class="field ">
+                            <div class="ui left icon input">
+                                <i class="envelope outline icon"></i>
+                                <input type="text" id="email" name="email" autocomplete="off" placeholder="邮箱号" >
+                            </div>
+                        </div>
+                        <div class="field ">
+                            <div class="ui left icon input">
+                                <button id="sendCheckCode" type="button" class="ui button">获取验证码</button>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="comment icon"></i>
+                                <input type="text" autocomplete="off" name="verification_code" placeholder="验证码">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" name="password" autocomplete="off" placeholder="密码">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" name="passwords" autocomplete="off" placeholder="确认密码">
+                            </div>
+                        </div>
+
+                        <button class="ui teal submit button">注 册 </button>
+                        <a href="register.html" th:href="@{/user}" style="position: absolute;right: 30px;bottom: 10px;">登 陆</a>
+                    </div>
+
+                    <div class="ui error mini message"></div>
+                    <div class="ui mini negative message" th:unless="${#strings.isEmpty(message)}" th:text="${message}">
+                        该用户已经存在
+                    </div>
+                    <div class="ui mini success message" th:unless="${#strings.isEmpty(success_message)}" th:text="${success_message}">
+                        成功！！！
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="../../static/js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+
+<script>
+    $("#sendCheckCode").click(function () {
+        var email=$('#email').val();
+        var regExp=/^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/ ;
+        if(!regExp.test(email)) {
+            alert("邮箱格式不正确！");
+            return;
+        }
+
+        $.ajax({
+            type: "get",
+            url: "/user/getCheckCode?email="+email,
+            dataType: "json",
+            success(data){
+                console.log(data);
+            }
+        });
+        //提示发送验证码了
+        alert("验证码发送中！！！");
+    });
+    $('.ui.form').form({
+        on :'blur',
+        fields: {
+            username: {
+                identifier: 'username',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入用户名'
+                },{
+                    type: 'maxLength[6]',
+                    prompt: '用户名不要超过6个字符'
+                }]
+            },
+            verification_code: {
+                identifier: 'verification_code',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入验证码'
+                }]
+            },
+            email: {
+                identifier: 'email',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入邮箱号'
+                },{
+                    type: 'regExp',
+                    value: /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/ ,
+                    prompt: '邮箱格式不正确！'
+                }]
+            },
+            password: {
+                identifier: 'password',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入密码'
+                },{
+                    type: 'maxLength[8]',
+                    prompt: '密码不要超过8个字符'
+                }]
+            },
+            passwords:{
+                identifier: 'passwords',
+                rules:[{
+                    type: 'match[password]',
+                    prompt: '两次输入的密码不相同'
+                }]
+            }
+        }
+    });
+
+
+</script>
+
+</body>
+</html>

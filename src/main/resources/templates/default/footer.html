@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>页脚</title>
+</head>
+<body>
+    <footer class="ui inverted vertical segment "th:fragment="footer">
+        <div class="ui center aligned container">
+            <div class="ui inverted divided stackable grid">
+                <div class="five wide column">
+                    <div class="ui inverted link list">
+                        <div class="item">
+                            <img src="../../static/images/xiaohui.jpg" th:src="@{/images/xiaohui.jpg}" class="ui rounded image" alt="" style="width: 110px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="five wide column">
+                    <h4 class="ui inverted header">联系我</h4>
+                    <div class="ui inverted link list">
+                        <a href="#" class="item m-text-thin">Email:15913967074@163.com</a>
+                        <a href="#" class="item m-text-thin">QQ:1908739556</a>
+                    </div>
+                </div>
+                <div class="six wide column">
+                    <h4 class="ui inverted header">21届毕设</h4>
+                    <p>火车票订票系统</p>
+                </div>
+            </div>
+            <div class="ui inverted section divider"></div>
+            <p class="m-text-spaced">Copyright © 2017 - 2021 GDPU 17 by Yong</p>
+        </div>
+    </footer>
+</body>
+</html>

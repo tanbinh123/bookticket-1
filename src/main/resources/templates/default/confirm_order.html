@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订票</title>
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../../static/css/common.css" rel="stylesheet" th:href="@{/css/common.css}">
+    <link href="../../static/css/corptravel.css" rel="stylesheet" th:href="@{/css/corptravel.css}">
+    <link href="../../static/css/enterprise.css" rel="stylesheet" th:href="@{/css/enterprise.css}">
+    <link href="../../static/css/iconfont.css" rel="stylesheet" th:href="@{/css/iconfont.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css" th:href="@{/css/me.css}">
+</head>
+<body>
+<!-- 导航 -->
+<div th:replace="~{default/navigation :: navigation}"></div>
+
+<!-- 中间内容 -->
+<form class="form segment" action="../add_order" method="post" th:action="@{/add_order/}+${trips.trips_id}">
+    <input type="hidden" name="trips.trips_train_name" value="G6750" th:value="${trips.trips_train_name}">
+    <div class="container bg-gray-eee box-shadow mar-bottom-30"
+         style="padding-right: 0px; padding-left: 0px; position: relative; margin-top: 120px;">
+        <div class="col-sm-7 container bg-white  pad-bottom-20"
+             style="margin-top: 30px; margin-bottom: 30px;">
+            <div style="overflow: hidden;">
+                <h3 class="mar-bottom-20" style="display: block; float: left;">乘车人</h3>
+            </div>
+            <div>
+                <input name="passenger_name" type="text" class="form-control input-sm w300"
+                       style="display: inline-block;" placeholder="姓名，与乘车时所持证件中的姓名一致">
+                <input type="date" name="date" disabled="disabled" th:value="${#dates.format(trips.trips_start_time,'yyyy-MM-dd')}"/>
+            </div>
+            <div class="mar-top-10">
+                <select name="seat_level" class="form-control input-sm w150" style=" display: inline-block;">
+                    <option  selected="selected" th:text="'一等座  ￥'+${trips.trips_first_seat_price}" th:if="${trips.trips_first_seat_num}>0">一等座</option>
+                    <option  th:text="'二等座  ￥'+${trips.trips_second_seat_price}" th:if="${trips.trips_second_seat_num}>0">二等座</option>
+                </select>
+                <input name="passenger_identity_num" type="text" class="form-control input-sm w300"
+                       style="display: inline-block;" placeholder="身份证件号码">
+            </div>
+
+
+
+
+            <!-- 联系人 -->
+            <h3 class="mar-bottom-20">联系人</h3>
+            <input name="linkman_name" type="text" class="form-control input-sm"
+                   style="display: inline-block; width: 460px;" placeholder="姓名">
+            <div class="mar-top-10">
+                <select name="select"
+                        class="form-control input-sm w110 mar-right-10"
+                        style="display: inline-block;">
+                    <option value="国家" selected="selected">中国&nbsp;&nbsp;+86</option>
+                </select> <input name="linkman_phone" type="text" class="form-control input-sm"
+                                 style="display: inline-block; width: 337px;"
+                                 placeholder="手机号码，接收通知">
+            </div>
+
+
+        </div>
+        <div class="col-sm-5 bg-gray-eee">
+            <div style="margin-left: -15px;">
+                <h4 style="overflow: hidden; margin-left: 10px;">
+                    <span style="display: block; float: left;"></span>
+                    <span style="display: block; float: left; margin-left: 200px;" th:text="${trips.trips_start_station_name}">北京市</span><span>-</span><span th:text="${trips.trips_end_station_name}">上海市</span>
+                    <span
+                            style="display: block; float: right; color: #999; font-size: 14px; margin-right: 5px;"></span>
+                </h4>
+            </div>
+            <div style="overflow: hidden; margin-bottom: 20px;">
+                <div class="flight-from" style="float: left;">
+                    <span class="time text-center" th:text="${#dates.format(trips.trips_start_time,'HH:mm:ss')}">08:30</span><br/>
+                    <span th:text="${trips.trips_start_station_name}">北京市</span>
+                </div>
+                <div class="flight-info" style="float: left; margin-left: 100px;">
+                    <img src="../../static/images/a.png" th:src="@{/images/a.png}"><img src="../../static/images/b.png" th:src="@{/images/b.png}">
+                    <br/> <img src="../../static/images/c.png" th:src="@{/images/c.png}" class="mar-left-10">
+                    <span class="text-center font12 gray-999"></span>实际乘坐<span th:text="${trips.trips_train_name}">G6750</span><br/> <span
+                        class="airline-direct"></span> <span class="arrow"></span>
+                </div>
+                <div class="flight-to" style="float: right;">
+                    <span class="time text-center" th:text="${#dates.format(trips.trips_end_time,'HH:mm:ss')}">12:00</span><br/> <span
+                        th:text="${trips.trips_end_station_name}">上海市</span>
+                </div>
+            </div>
+            <div>
+                <div class="tuigaiqian" style="cursor: pointer; color: #337ab7;">退改签说明</div>
+                <div class="instruction">
+                    <table class="table table-bordered" style="height: 150px;">
+                        <tr>
+                            <td>成人票</td>
+                            <td>退票扣费</td>
+                            <td>改期加收手续费</td>
+                            <td>签转</td>
+                        </tr>
+                        <tr>
+                            <td>发车24小时之前</td>
+                            <td>车票金额10%</td>
+                            <td>车票金额5%</td>
+                            <td>可以签转</td>
+                        </tr>
+                        <tr>
+                            <td>发车前24小时之后</td>
+                            <td>车票金额20%</td>
+                            <td>车票金额10%</td>
+                            <td>可以签转</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+    <!--输入错误提示-->
+    <div class="ui error mini message" style="display: none"></div>
+    <div class="text-center mar-top-10" style="margin-bottom: 20px;">
+        <input type="submit" value="提交订单" class="btn btn-danger mar-top-20" id="sum" >
+    </div>
+</form>
+
+<br>
+<br>
+<!-- 底部 -->
+<div th:replace="~{default/footer :: footer}"></div>
+
+<script src="../../static/js/jquery-3.5.1.min.js" th:src="@{/js/jquery-3.5.1.min.js}"></script>
+<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script>
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+    //表单校验
+    $('.form').form( {
+        fields :{
+            passenger_identity_num:{
+                identifier:'passenger_identity_num',
+                rules:[{
+                    type:'regExp',
+                    value:/(^\d{15}$)|(^\d{18}$r)|(^\d{17}(\d|X|x)$)/,
+                    prompt:'请输入正确的身份证号码！'
+                }]
+            },
+            passenger_name: {
+                identifier: 'passenger_name',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入乘车人'
+                }]
+            },
+            linkman_phone:{
+                identifier: 'linkman_phone',
+                rules:[{
+                    type:'regExp',
+                    value:/^1[34578]\d{9}$/,
+                    prompt:'请输入正确的手机号码！'
+                }]
+            }
+
+        }
+    })
+    $('#sum').click(function () {
+        if($('.error').is(':hidden'))
+            $('.error').show();
+    })
+
+
+</script>
+</body>
+</html>

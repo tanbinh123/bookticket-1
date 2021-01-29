@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link href="../../static/css/common.css" rel="stylesheet" th:href="@{/css/common.css}">
+    <link href="../../static/css/corptravel.css" rel="stylesheet" th:href="@{/css/corptravel.css}">
+</head>
+<body>
+
+<div class="container bg-gray-eee box-shadow mar-bottom-30"
+     style="padding-right: 0px; padding-left: 0px; position: relative; margin-top: 120px;">
+    <table border="0" cellspacing="0" cellpadding="0"
+           class="table table-hover table-striped font12 table-bordered v-align-top">
+        <tr>
+            <th style="width:8%;">列车号</th>
+            <th style="width:10%;">乘车人</th>
+            <th style="width:10%;">发车日期</th>
+            <th style="width:8%;">出发城市</th>
+            <th style="width:8%;">到达城市</th>
+            <th style="width:5%;">坐席</th>
+            <th style="width:15%;">乘客证件</th>
+            <th style="width:10%;">联系人</th>
+            <th style="width:14%;">联系人手机号</th>
+            <th style="width:6%;">价格</th>
+            <th style="width:6%;">状态</th>
+        </tr>
+        <tr th:each="order:${orderList}">
+            <td th:text="${order.order_train_name}"></td>
+            <td th:text="${order.order_passenger_name}"></td>
+            <td th:text="${#dates.format(order.start_date,'yyyy-MM-dd')}"></td>
+            <td th:text="${order.start_city}"></td>
+            <td th:text="${order.end_city}"></td>
+            <td th:text="${order.order_seat_level == 1 ? '一等座' : '二等座' }"></td>
+            <td th:text="${order.order_passenger_identity_num}"></td>
+            <td th:text="${order.order_linkman_name}"></td>
+            <td th:text="${order.order_linkman_phone}"></td>
+            <td th:text="${'￥' + order.order_price}"></td>
+            <td th:if="${order.order_status} eq '1'" th:text="已发车"></td>
+            <td th:if="${order.order_status} eq '2'" th:text="已退票"></td>
+            <td th:if="${order.order_status} eq '3'" th:text="已改签"></td>
+            <td th:if="${order.order_status} eq '0'">
+                <form id="form-msg" class="sui-form form-horizontal" action="../refundTicket" method="get" th:action="@{/refundTicket/}+${order.order_id}">
+                    <div id="navfirst">
+                        <input type="submit" class="input-middle" value="可退票" style="margin-top: 25px">
+                    </div>
+                </form>
+                <form id="form" class="sui-form form-horizontal" action="../changingTicket" method="get" th:action="@{/toChangingTicket/}+${order.order_id}">
+                    <div id="navsecond">
+                        <input type="submit" class="input-middle" value="可改签" style="margin-top: 25px">
+                    </div>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

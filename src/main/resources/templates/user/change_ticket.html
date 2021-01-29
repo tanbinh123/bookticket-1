@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>改签</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+</head>
+<body>
+<div class="wide column" style="width: 900px;">
+    <!-- header -->
+    <div class="ui top attached segment">
+        <div class="ui middle aligned two column grid">
+            <div class="column">
+                <h3 class="ui teal header">车次</h3>
+            </div>
+        </div>
+    </div>
+    <!-- content -->
+    <div class="ui attached segment">
+        <table class="ui table">
+            <thead>
+            <tr>
+                <th>列车名</th>
+                <th>起点</th>
+                <th>终点</th>
+                <th>出发时间</th>
+                <th>到达时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="trips:${tripsList}" >
+                <td th:text="${trips.trips_train_name}"></td>
+                <td th:text="${trips.trips_start_station_name}"></td>
+                <td th:text="${trips.trips_end_station_name}"></td>
+                <td th:text="${#dates.format(trips.trips_start_time,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${#dates.format(trips.trips_end_time,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td>
+                    <button><a href="#" th:href="@{/changing_order/(trips_id=${trips.trips_id},order_id=${order_id})}">选择改签</a></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>导航栏</title>
+</head>
+<body>
+<!-- 导航 -->
+<div th:fragment="navigation">
+    <nav class="ui inverted attached segment m-padded-tb-mini m-shadow-small" >
+        <div class="ui container">
+            <div class="ui inverted secondary stackable menu">
+                <h2 class="ui teal header item"><img src="../../static/images/logo.png" th:src="@{/images/logo.png}"></h2>
+                <a href="index.html" class="active m-item item m-mobile-hide" th:href="@{/}"><i class="home icon"></i>首页</a>
+                <div class="m-item right item m-mobile-hide menu" th:if="${session.username} != null">
+                    <div class="ui dropdown item">
+                        <div class="text">
+                            <img src="../../static/images/user.png" th:src="@{/images/user.png}" class="ui avatar image">
+                            <span th:text="${session.username}">GDPUTrain</span>
+                        </div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a href="#" class="item" th:href="@{/user/ToUserCenter}">个人中心</a>
+                            <a href="../user/login.html" th:href="@{/user/logout}" class="item">注销</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-item right item m-mobile-hide menu" th:if="${session.username} == null">
+                    <div class="ui dropdown item">
+                        <div class="text">
+                            <a href="#" th:href="@{/user}" class="item">请登录</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+            <i class="sidebar icon"></i>
+        </a>
+    </nav>
+</div>
+
+</body>
+</html>
