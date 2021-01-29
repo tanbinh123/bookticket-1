@@ -85,4 +85,10 @@ public class TripsServiceImpl implements TripsService {
 
         return result;
     }
+
+    @Override
+    public int deleteEveryDay() {
+        return tripsMapper.delete(new QueryWrapper<Trips>().eq("trips_delete_flag",0).
+                                                            lt("trips_start_time",new Date()));
+    }
 }

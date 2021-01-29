@@ -67,4 +67,13 @@ public interface TripsService {
      * @return java.util.List<com.ma.bookticket.pojo.Trips>
      */
     public List<Trips> getChangingTrips(int order_id);
+
+    /**
+     *
+     * 对超过发车日期的车次进行逻辑删除
+     * @author yong
+     * @date 2021/1/29 17:43
+     * @return int
+     */
+    public int deleteEveryDay();
 }
