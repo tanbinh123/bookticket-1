@@ -23,16 +23,9 @@ public interface TripsService {
      * @return java.util.List<com.ma.bookticket.pojo.Trips>
      */
     public List<Trips> getSomeTrips(int line_id, Date start_date);
+
     /**
-     *
-     * 获得数据库的车次列表并展示
-     * @author yong
-     * @date 2021/1/22 0:54
-     * @return java.util.List<com.ma.bookticket.pojo.Trips>
-     */
-    public List<Trips> getAllTrips();
-    /**
-     * 通过车次编号查找获取车次信息
+     * 通过车次编号查找获取车次信息(忽略已逻辑删除的行)
      * @param trips_id 车次编号
      * @author yong
      * @date 2021/1/23 22:24

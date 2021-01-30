@@ -34,15 +34,11 @@ public class TripsServiceImpl implements TripsService {
     public List<Trips> getSomeTrips(int line_id, Date start_date) {
         Date end_date=new Date(start_date.getTime()+3600*24*1000);
         return tripsMapper.selectList(new QueryWrapper<Trips>()
-                .eq("trips_line_id",line_id).between("trips_start_time",start_date,end_date)
+                .eq("trips_line_id",line_id).between("trips_start_time",new Date(),end_date)
                 .and(i->i.ge("trips_first_seat_num",1).or().ge("trips_second_seat_num",1))
         );
     }
 
-    @Override
-    public List<Trips> getAllTrips() {
-        return tripsMapper.selectAll();
-    }
 
     @Override
     public Trips getOneById(int trips_id) {

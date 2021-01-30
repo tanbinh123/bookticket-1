@@ -53,25 +53,28 @@ public class OrderServiceImpl implements OrderService {
 
         List<Orders> ordersList = orderMapper.selectList(
                 new QueryWrapper<Orders>().eq("order_user_id", user_id).orderByDesc("order_create_time"));
-        ordersList.forEach(order -> {
-            int trips_id=order.getOrder_trips_id();
-            Trips trips = tripsMapper.selectById(trips_id);
-            order.setOrder_train_name(trips.getTrips_train_name());     //获得列车名
+        if(ordersList!=null&&ordersList.size()>0) {
+            ordersList.forEach(order -> {
+                int trips_id=order.getOrder_trips_id();
+                Trips trips = tripsMapper.getOneByIdForOrder(trips_id);
+                order.setOrder_train_name(trips.getTrips_train_name());     //获得列车名
 
-            Date date=trips.getTrips_start_time();
-            if(date.getTime()<=new Date().getTime()) {
-                order.setOrder_status(1);                               //设置已发车
-                orderMapper.updateById(order);
-            }
+                Date date=trips.getTrips_start_time();
+                if(date.getTime()<=new Date().getTime()) {
+                    order.setOrder_status(1);                               //设置已发车
+                    orderMapper.updateById(order);
+                }
 
-            order.setStart_date(date);                                  //设置发车日期
+                order.setStart_date(date);                                  //设置发车日期
 
-            int line_id=trips.getTrips_line_id();
-            Line line = lineMapper.selectById(line_id);
-            order.setStart_city(line.getLine_start_station_name());     //设置出发和达到城市
-            order.setEnd_city(line.getLine_end_station_name());
+                int line_id=trips.getTrips_line_id();
+                Line line = lineMapper.selectById(line_id);
+                order.setStart_city(line.getLine_start_station_name());     //设置出发和达到城市
+                order.setEnd_city(line.getLine_end_station_name());
 
-        });
+            });
+        }
+
 
         return ordersList;
     }
