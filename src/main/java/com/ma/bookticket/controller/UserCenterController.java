@@ -5,6 +5,11 @@ import com.ma.bookticket.pojo.User;
 import com.ma.bookticket.service.MailService;
 import com.ma.bookticket.service.OrderService;
 import com.ma.bookticket.service.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.Md5Hash;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -123,7 +128,6 @@ public class UserCenterController {
      * 更改密码
      * @param check_code 用户输入的验证码
      * @param pasword 用户输入的新密码
-     * @param session HttpSession
      * @param attributes 给页面传递参数
      * @author yong
      * @date 2021/1/26 23:09
@@ -133,9 +137,14 @@ public class UserCenterController {
     @PostMapping("/UpdatePwd")
     public String updatePwd(@RequestParam("verification_code") String check_code,
                             @RequestParam("password") String pasword,
-                            HttpSession session,RedirectAttributes attributes) {
-        String vefication_code = (String) session.getAttribute(UPDATE_VEFICATION_CODE);
-        String username = (String) session.getAttribute("username");
+                            RedirectAttributes attributes) {
+
+        // 获取 subject 认证主体
+        Subject currentUser = SecurityUtils.getSubject() ;
+        Session session = currentUser.getSession() ;
+
+        String vefication_code = (String) session.getAttribute(UPDATE_VEFICATION_CODE);     //获取验证码
+        String username =(String)session.getAttribute("username");                       //获取用户名
         String message = "";
         String success_message = "";
         if (!StringUtils.hasText(vefication_code) || !vefication_code.equals(check_code))
@@ -143,8 +152,12 @@ public class UserCenterController {
         else if (!StringUtils.hasText(pasword))
             message = "密码为空，请输入！！！";
         else {
-            User user = userService.selecOneByname(username);
-            user.setUser_password(pasword);
+            User user =(User)session.getAttribute("user");                       //获取用户
+            //更改密码
+            String salt = new SecureRandomNumberGenerator().nextBytes().toHex();    //随机生成盐值
+            Md5Hash md5Hash = new Md5Hash(pasword, salt, 1);
+            user.setUser_password(md5Hash.toHex());
+            user.setUser_salt(salt);
             userService.update(user);
             success_message = "修改成功";
         }

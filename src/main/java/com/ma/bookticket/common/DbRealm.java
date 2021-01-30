@@ -9,7 +9,9 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -23,6 +25,10 @@ public class DbRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
+    @Override
+    public String getName() {
+        return "DbRealm";
+    }
     /**
      * 进行授权操作
      *
@@ -31,7 +37,6 @@ public class DbRealm extends AuthorizingRealm {
      * @date 2021/1/29 23:11
      * @return org.apache.shiro.authz.AuthorizationInfo
      */
-
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         return null;
@@ -54,9 +59,12 @@ public class DbRealm extends AuthorizingRealm {
         User user = userService.selecOneByname(username);
         if(user != null) {
             // 把当前用户名存到 Session 中
-            SecurityUtils.getSubject().getSession().setAttribute("username",username);
+            Session session=SecurityUtils.getSubject().getSession();
+            session.setAttribute("username",username);
+            session.setAttribute("user",user);
             // 传入用户名和密码进行身份认证，并返回认证信息
-            AuthenticationInfo  authcInfo = new SimpleAuthenticationInfo(user.getUser_login_name(), user.getUser_password(), "DbRealm");
+            AuthenticationInfo  authcInfo = new SimpleAuthenticationInfo(user.getUser_login_name(), user.getUser_password(),
+                                                                            ByteSource.Util.bytes(user.getUser_salt()), getName());
             return authcInfo;
         }else {
             return null;

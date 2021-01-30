@@ -1,6 +1,7 @@
 package com.ma.bookticket.config;
 
 import com.ma.bookticket.common.DbRealm;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
@@ -43,6 +44,8 @@ public class shiroConfig {
         filterChainMap.put("/js/**", "anon");
         filterChainMap.put("/", "anon");
         filterChainMap.put("/getTrips", "anon");
+        filterChainMap.put("/loginValidateCode", "anon");
+        filterChainMap.put("/getCheckCode", "anon");
         // 登录 URL 放行
         filterChainMap.put("/login", "anon");
         // 注册 URL 放行
@@ -79,7 +82,9 @@ public class shiroConfig {
      */
     @Bean
     public DbRealm myRealm() {
-        return new DbRealm();
+        DbRealm dbRealm = new DbRealm();
+        dbRealm.setCredentialsMatcher(hashedCredentialsMatcher());      //设置加密
+        return dbRealm;
     }
 
     /**
@@ -94,5 +99,25 @@ public class shiroConfig {
         sessionManager.setGlobalSessionTimeout(3600000);
         sessionManager.setDeleteInvalidSessions(true);
         return sessionManager;
+    }
+
+    /**
+     * 凭证匹配器
+     * （由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了）
+     * HashedCredentialsMatcher说明：
+     * 用户传入的token先经过shiroRealm的doGetAuthenticationInfo方法
+     * 此时token中的密码为明文。
+     * 再经由HashedCredentialsMatcher加密password与查询用户的结果password做对比。
+     * @author yong
+     * @date 2021/1/30 21:11 
+     * @return org.apache.shiro.authc.credential.HashedCredentialsMatcher
+     */
+
+    @Bean
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
+        matcher.setHashAlgorithmName("md5");            //设置加密算法
+        matcher.setHashIterations(1);                   //散列的次数，比如散列两次，相当于 MD5(MD5(""));
+        return matcher;
     }
 }
