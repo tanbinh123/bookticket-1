@@ -17,7 +17,7 @@
 <div th:replace="~{default/navigation :: navigation}"></div>
 
 <!-- 中间内容 -->
-<form class="form segment" action="../add_order" method="post" th:action="@{/add_order/}+${trips.trips_id}">
+<form class="form segment" action="../add_order" method="post" th:action="@{/user/add_order/}+${trips.trips_id}">
     <input type="hidden" name="trips.trips_train_name" value="G6750" th:value="${trips.trips_train_name}">
     <div class="container bg-gray-eee box-shadow mar-bottom-30"
          style="padding-right: 0px; padding-left: 0px; position: relative; margin-top: 120px;">

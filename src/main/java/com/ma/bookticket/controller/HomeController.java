@@ -152,7 +152,7 @@ public class HomeController {
      * @return java.lang.String
      */
 
-    @GetMapping("confirm_order/{trips_id}")
+    @GetMapping("/user/confirm_order/{trips_id}")
     public String toConfirmOrder(@PathVariable("trips_id") Integer trips_id, Model model, HttpSession session, RedirectAttributes attributes) {
         String username = (String) session.getAttribute("username");
         if(username == null) {

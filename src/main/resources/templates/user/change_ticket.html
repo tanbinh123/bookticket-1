@@ -36,7 +36,7 @@
                 <td th:text="${#dates.format(trips.trips_start_time,'yyyy-MM-dd HH:mm:ss')}"></td>
                 <td th:text="${#dates.format(trips.trips_end_time,'yyyy-MM-dd HH:mm:ss')}"></td>
                 <td>
-                    <button><a href="#" th:href="@{/changing_order/(trips_id=${trips.trips_id},order_id=${order_id})}">选择改签</a></button>
+                    <button><a href="#" th:href="@{/user/changing_order/(trips_id=${trips.trips_id},order_id=${order_id})}">选择改签</a></button>
                 </td>
             </tr>
             </tbody>

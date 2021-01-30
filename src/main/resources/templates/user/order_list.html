@@ -40,12 +40,12 @@
             <td th:if="${order.order_status} eq '2'" th:text="已退票"></td>
             <td th:if="${order.order_status} eq '3'" th:text="已改签"></td>
             <td th:if="${order.order_status} eq '0'">
-                <form id="form-msg" class="sui-form form-horizontal" action="../refundTicket" method="get" th:action="@{/refundTicket/}+${order.order_id}">
+                <form id="form-msg" class="sui-form form-horizontal" action="../refundTicket" method="get" th:action="@{/user/refundTicket/}+${order.order_id}">
                     <div id="navfirst">
                         <input type="submit" class="input-middle" value="可退票" style="margin-top: 25px">
                     </div>
                 </form>
-                <form id="form" class="sui-form form-horizontal" action="../changingTicket" method="get" th:action="@{/toChangingTicket/}+${order.order_id}">
+                <form id="form" class="sui-form form-horizontal" action="../changingTicket" method="get" th:action="@{/user/toChangingTicket/}+${order.order_id}">
                     <div id="navsecond">
                         <input type="submit" class="input-middle" value="可改签" style="margin-top: 25px">
                     </div>

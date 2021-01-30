@@ -21,14 +21,14 @@
                         <i class="dropdown icon"></i>
                         <div class="menu">
                             <a href="#" class="item" th:href="@{/user/ToUserCenter}">个人中心</a>
-                            <a href="../user/login.html" th:href="@{/user/logout}" class="item">注销</a>
+                            <a href="../user/login.html" th:href="@{/logout}" class="item">注销</a>
                         </div>
                     </div>
                 </div>
                 <div class="m-item right item m-mobile-hide menu" th:if="${session.username} == null">
                     <div class="ui dropdown item">
                         <div class="text">
-                            <a href="#" th:href="@{/user}" class="item">请登录</a>
+                            <a href="#" th:href="@{/login}" class="item">请登录</a>
                         </div>
                     </div>
                 </div>

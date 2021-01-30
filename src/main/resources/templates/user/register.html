@@ -26,7 +26,7 @@
                         用户注册
                     </div>
                 </h2>
-                <form class="ui large form" method="post" action="#" id="loginform" th:action="@{/user/register}">
+                <form class="ui large form" method="post" action="#" id="loginform" th:action="@{/register}">
                     <div class="ui  segment" style="position: relative;">
                         <div class="field ">
                             <div class="ui left icon input">
@@ -65,7 +65,7 @@
                         </div>
 
                         <button class="ui teal submit button">注 册 </button>
-                        <a href="register.html" th:href="@{/user}" style="position: absolute;right: 30px;bottom: 10px;">登 陆</a>
+                        <a href="register.html" th:href="@{/login}" style="position: absolute;right: 30px;bottom: 10px;">登 陆</a>
                     </div>
 
                     <div class="ui error mini message"></div>
@@ -97,7 +97,7 @@
 
         $.ajax({
             type: "get",
-            url: "/user/getCheckCode?email="+email,
+            url: "/getCheckCode?email="+email,
             dataType: "json",
             success(data){
                 console.log(data);

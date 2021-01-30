@@ -7,7 +7,6 @@ import com.ma.bookticket.service.OrderService;
 import com.ma.bookticket.service.TripsService;
 import com.ma.bookticket.service.UserService;
 
-import javafx.scene.input.MouseDragEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,7 +45,7 @@ public class OrderController {
      * @return java.lang.String
      */
 
-    @PostMapping("add_order/{trips_id}")
+    @PostMapping("/user/add_order/{trips_id}")
     public String addOne(@PathVariable(value = "trips_id") Integer trips_id, HttpServletRequest request, HttpSession session) {
         String passenger_name = request.getParameter("passenger_name");
         String seat_level = request.getParameter("seat_level");
@@ -93,7 +92,7 @@ public class OrderController {
      * @return java.lang.String
      */
 
-    @GetMapping("refundTicket/{order_id}")
+    @GetMapping("/user/refundTicket/{order_id}")
     public String refundTicket(@PathVariable(value = "order_id") Integer order_id) {
         orderService.refundTicket(order_id);
         return "redirect:/user/ToOrderList";
@@ -109,7 +108,7 @@ public class OrderController {
      * @return java.lang.String
      */
 
-    @GetMapping("toChangingTicket/{order_id}")
+    @GetMapping("/user/toChangingTicket/{order_id}")
     public String toChangingTicket(@PathVariable(value = "order_id") Integer order_id, Model model) {
         List<Trips> tripsList = tripsService.getChangingTrips(order_id);
         model.addAttribute("tripsList",tripsList);
@@ -117,7 +116,7 @@ public class OrderController {
         return "user/change_ticket";
     }
 
-    @GetMapping("changing_order")
+    @GetMapping("/user/changing_order")
     public String changing_order(@RequestParam("trips_id") Integer trips_id,
                                  @RequestParam("order_id") Integer order_id ) {
         orderService.changing_order(order_id,trips_id);

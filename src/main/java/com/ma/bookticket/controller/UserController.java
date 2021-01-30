@@ -23,7 +23,6 @@ import java.util.Random;
  * @date 2021/1/18 16:20
  */
 @Controller
-@RequestMapping("/user")
 public class UserController {
     /**
      * 登录验证码SessionKey
@@ -47,7 +46,7 @@ public class UserController {
      * @return java.lang.String
      */
 
-    @GetMapping
+    @GetMapping("/login")
     public String Login(){
         return "user/login";
     }
@@ -97,23 +96,23 @@ public class UserController {
         User user = userService.selecOneByname(username);
         if (validateCode==null){
             attributes.addFlashAttribute("message","请输入验证码");
-            return "redirect:/user";
+            return "redirect:/login";
         }else if (!validateCode.equals(loginValidateCode)){
             attributes.addFlashAttribute("message","验证码错误");
+            return "redirect:/login";
         }else {
             if(user == null){
                 attributes.addFlashAttribute("message","用户不存在");
-                return "redirect:/user";
+                return "redirect:/login";
             }else if(user.getUser_password().equals(password)){
                 user.setUser_password(null);
                 session.setAttribute("username",username);
                 return "redirect:/";
             }else{
                 attributes.addFlashAttribute("message","用户名或密码错误");
-                return "redirect:/user";
+                return "redirect:/login";
             }
         }
-        return "redirect:/user";
     }
     /**
      * 先校验注册时用户所填的信息是否非法，如果合法再去数据库中查找是否有该用户，非法或用户已经存在的要提供相应的提示信息
@@ -150,7 +149,7 @@ public class UserController {
         }
         if(!message.equals("")) {
             attributes.addFlashAttribute("message",message);
-            return "redirect:/user/register";
+            return "redirect:/register";
         }
         User user=new User();
         user.setUser_login_name(username);
@@ -158,7 +157,7 @@ public class UserController {
         user.setUser_email(email);
         userService.addOne(user);
         attributes.addFlashAttribute("success_message","恭喜注册成功！！！！");
-        return "redirect:/user/register";
+        return "redirect:/login";
     }
 
     /**
@@ -172,7 +171,7 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpSession session){
         session.removeAttribute("username");
-        return "redirect:/user";
+        return "redirect:/login";
     }
 
 
@@ -188,7 +187,7 @@ public class UserController {
     public String getCheckCode(@RequestParam String email,RedirectAttributes attributes,HttpSession session) {
         if(!StringUtils.hasText(email)) {
             attributes.addFlashAttribute("message","验证码为空，请输入!!!");
-            return "redirect:/user/register";
+            return "redirect:/register";
         }
         String checkCode = String.valueOf(new Random().nextInt(899999) + 100000);
         String Subject="火车票订票系统验证码";

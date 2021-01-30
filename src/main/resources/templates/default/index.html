@@ -84,7 +84,7 @@
                             <td th:text="${trips.trips_first_seat_num}"></td>
                             <td th:text="${trips.trips_second_seat_num}"></td>
                             <td>
-                                <button><a href="confirm_order.html" th:href="@{/confirm_order/}+${trips.trips_id}">预定</a></button>
+                                <button><a href="confirm_order.html" th:href="@{/user/confirm_order/}+${trips.trips_id}">预定</a></button>
                             </td>
                         </tr>
                         </tbody>
