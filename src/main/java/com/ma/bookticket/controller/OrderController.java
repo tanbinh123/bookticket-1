@@ -7,9 +7,13 @@ import com.ma.bookticket.service.OrderService;
 import com.ma.bookticket.service.TripsService;
 import com.ma.bookticket.service.UserService;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,50 +43,57 @@ public class OrderController {
      *
      * @param trips_id 车次编号
      * @param request 请求信息
-     * @param session HttpSession
      * @author yong
      * @date 2021/1/27 21:17
      * @return java.lang.String
      */
 
     @PostMapping("/user/add_order/{trips_id}")
-    public String addOne(@PathVariable(value = "trips_id") Integer trips_id, HttpServletRequest request, HttpSession session) {
+    public String addOne(@PathVariable(value = "trips_id") Integer trips_id, HttpServletRequest request) {
+
+        Session session= SecurityUtils.getSubject().getSession();
+
         String passenger_name = request.getParameter("passenger_name");
         String seat_level = request.getParameter("seat_level");
         String passenger_identity_num =request.getParameter("passenger_identity_num");
         String linkman_name =request.getParameter("linkman_name");
         String linkman_phone =request.getParameter("linkman_phone");
-        String username =(String) session.getAttribute("username");
-        User user = userService.selecOneByname(username);
+        User user =(User) session.getAttribute("user");
         int user_id=user.getUser_id();
-        //获取票价
-        char[] chars = seat_level.toCharArray();
-        int index=0;//数字字符的开始位置
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 48 && chars[i] <= 57) {
-                index = i;
-                break;
+
+        if(StringUtils.hasText(passenger_name) && StringUtils.hasText(passenger_identity_num)
+                && StringUtils.hasText(seat_level) ) {
+
+            //获取票价
+            char[] chars = seat_level.toCharArray();
+            int index=0;//数字字符的开始位置
+            for (int i = 0; i < chars.length; i++) {
+                if (chars[i] >= 48 && chars[i] <= 57) {
+                    index = i;
+                    break;
+                }
             }
+            double order_price=Double.parseDouble(seat_level.substring(index));
+            //获取坐席级别
+            int seat_level_flag=1;
+            if(seat_level.contains("二等座"))
+                seat_level_flag=2;
+
+            Orders order = new Orders();
+            order.setOrder_passenger_name(passenger_name);
+            order.setOrder_seat_level(seat_level_flag);
+            order.setOrder_passenger_identity_num(passenger_identity_num);
+            order.setOrder_linkman_name(linkman_name);
+            order.setOrder_linkman_phone(linkman_phone);
+            order.setOrder_price(order_price);
+            order.setOrder_status(0);   //初始为创建状态
+            order.setOrder_trips_id(trips_id);
+            order.setOrder_user_id(user_id);
+
+            if(orderService.saveOne(order)==1);     //生成订单并减少车座数量
+            return "redirect:/user/ToUserCenter";
         }
-        double order_price=Double.parseDouble(seat_level.substring(index));
-        //获取坐席级别
-        int seat_level_flag=1;
-        if(seat_level != null&&seat_level.contains("二等座"))
-            seat_level_flag=2;
-
-        Orders order = new Orders();
-        order.setOrder_passenger_name(passenger_name==null?"":passenger_name);//数据库中是非空字段，防止插入异常
-        order.setOrder_seat_level(seat_level_flag);
-        order.setOrder_passenger_identity_num(passenger_identity_num==null?"":passenger_identity_num);//数据库中是非空字段，防止插入异常
-        order.setOrder_linkman_name(linkman_name);
-        order.setOrder_linkman_phone(linkman_phone);
-        order.setOrder_price(order_price);
-        order.setOrder_status(0);   //初始为创建状态
-        order.setOrder_trips_id(trips_id);
-        order.setOrder_user_id(user_id);
-
-        if(orderService.saveOne(order)==1);     //生成订单并减少车座数量
-            return "redirect:/";
+        return "/default/index";
     }
     /**
      * 进行退票操作，成功就返回订单列表

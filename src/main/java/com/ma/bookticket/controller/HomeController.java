@@ -6,13 +6,16 @@ import com.ma.bookticket.pojo.Line;
 import com.ma.bookticket.pojo.Trips;
 import com.ma.bookticket.service.LineService;
 import com.ma.bookticket.service.TripsService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.InvalidSessionException;
+import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
+
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,14 +50,15 @@ public class HomeController {
     /**
      * 分页操作获取信息
      * @param model 给页面传递参数
-     * @param session HttpSession
      * @author yong
      * @date 2021/1/22 20:40
      * @return java.lang.String
      */
 
     @GetMapping("/getTrips")
-    public String home(Model model,HttpSession session,@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum) {
+    public String home(Model model,@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum) {
+
+        Session session= SecurityUtils.getSubject().getSession();
         //为了程序的严谨性，判断非空：
         if(pageNum == null){
             pageNum = 1;   //设置默认当前页
@@ -63,7 +67,14 @@ public class HomeController {
             pageNum = 1;
         }
 
-        PageInfo<Trips> pageInfo=(PageInfo<Trips>)session.getAttribute("pageInfo");//获取页面的分页信息
+        //获取页面的分页信息
+        PageInfo<Trips> pageInfo= null;
+        try {
+            pageInfo = (PageInfo<Trips>)session.getAttribute("pageInfo");
+        } catch (InvalidSessionException e) {
+            e.printStackTrace();
+        }
+        assert pageInfo != null;
         Trips aTrip=pageInfo.getList().get(0);
         int line_id=aTrip.getTrips_line_id();
         Date date=(Date) session.getAttribute("date");
@@ -104,9 +115,11 @@ public class HomeController {
      */
 
     @PostMapping("/getTrips")
-    public String getTrips(@RequestParam("StartStation") String start_station, @RequestParam("EndStation") String end_station,
-                           @RequestParam("date") String datestr,
-                           Model model, HttpSession session) throws ParseException {
+    public String getTrips(@RequestParam("StartStation") String start_station,
+                           @RequestParam("EndStation") String end_station,
+                           @RequestParam("date") String datestr, Model model) throws ParseException {
+
+        Session session= SecurityUtils.getSubject().getSession();
         List<Trips> someTrips;
         if(datestr!=null&&datestr.length()!=0) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -145,20 +158,14 @@ public class HomeController {
      * 跳转到确认订单页面，页面需包括车次的一些信息
      * @param trips_id 车次编号
      * @param model 给页面传递参数
-     * @param session HttpSession
-     * @param attributes 为跳转页面传参
      * @author yong
      * @date 2021/1/23 23:32
      * @return java.lang.String
      */
 
     @GetMapping("/user/confirm_order/{trips_id}")
-    public String toConfirmOrder(@PathVariable("trips_id") Integer trips_id, Model model, HttpSession session, RedirectAttributes attributes) {
-        String username = (String) session.getAttribute("username");
-        if(username == null) {
-            attributes.addFlashAttribute("message","您无权限访问，请先登录");
-            return "redirect:/user";
-        }
+    public String toConfirmOrder(@PathVariable("trips_id") Integer trips_id, Model model ) {
+
         Trips trips = tripsService.getOneById(trips_id);
         if(trips!=null) {
             int line_id=trips.getTrips_line_id();

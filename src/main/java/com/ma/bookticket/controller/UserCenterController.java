@@ -144,7 +144,6 @@ public class UserCenterController {
         Session session = currentUser.getSession() ;
 
         String vefication_code = (String) session.getAttribute(UPDATE_VEFICATION_CODE);     //获取验证码
-        String username =(String)session.getAttribute("username");                       //获取用户名
         String message = "";
         String success_message = "";
         if (!StringUtils.hasText(vefication_code) || !vefication_code.equals(check_code))
@@ -155,7 +154,7 @@ public class UserCenterController {
             User user =(User)session.getAttribute("user");                       //获取用户
             //更改密码
             String salt = new SecureRandomNumberGenerator().nextBytes().toHex();    //随机生成盐值
-            Md5Hash md5Hash = new Md5Hash(pasword, salt, 1);
+            Md5Hash md5Hash = new Md5Hash(pasword, salt, 3);
             user.setUser_password(md5Hash.toHex());
             user.setUser_salt(salt);
             userService.update(user);

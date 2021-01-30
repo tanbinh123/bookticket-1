@@ -68,9 +68,10 @@ public class UserController {
     public String register() {
         return "user/register";
     }
+
     /**
      * 生成登陆码验证图片，并在reponse里添加验证码图片等信息（KaptchaUtils里可查看具体步骤）
-     * 此时HttpSession里也存放了验证码文本信息
+     * 此时Session里也存放了验证码文本信息
      * @param response 返回
      * @author yong
      * @date 2021/1/18 16:55
@@ -171,7 +172,7 @@ public class UserController {
         }
 
         String salt = new SecureRandomNumberGenerator().nextBytes().toHex(); //随机生成盐值
-        String pwd = new Md5Hash(password,salt,1).toHex(); //生成的密文，使用md5算法对明文与盐值的组合进行了一次加密
+        String pwd = new Md5Hash(password,salt,3).toHex(); //生成的密文，使用md5算法对明文与盐值的组合进行了一次加密
 
         User user=new User();
         user.setUser_login_name(username);
@@ -179,7 +180,6 @@ public class UserController {
         user.setUser_salt(salt);
         user.setUser_email(email);
         userService.addOne(user);
-        attributes.addFlashAttribute("success_message","恭喜注册成功！！！！");
         return "redirect:/login";
     }
 

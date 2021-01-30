@@ -117,7 +117,7 @@ public class shiroConfig {
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
         matcher.setHashAlgorithmName("md5");            //设置加密算法
-        matcher.setHashIterations(1);                   //散列的次数，比如散列两次，相当于 MD5(MD5(""));
+        matcher.setHashIterations(3);                   //散列的次数，比如散列两次，相当于 MD5(MD5(""));
         return matcher;
     }
 }
