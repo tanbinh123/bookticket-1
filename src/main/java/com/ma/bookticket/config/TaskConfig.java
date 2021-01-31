@@ -31,12 +31,14 @@ public class TaskConfig {
      */
 
     @Async
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 14 0 * * ?")
     public void trips_delte_task() {
         int count=0;        //记录删除条数
         count=tripsService.deleteEveryDay();
         if(count!=0)
             System.out.println("成功删除"+count+"条超时车次");
+        else
+            System.out.println("------------------------无定时任务需操作-------------------------");
     }
 
 }
