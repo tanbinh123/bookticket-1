@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ma.bookticket.mapper.UserMapper;
 import com.ma.bookticket.pojo.User;
 import com.ma.bookticket.service.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int update(User user) {
+        // 获取 subject 认证主体
+        Subject currentUser = SecurityUtils.getSubject() ;
+        Session session = currentUser.getSession() ;
+        session.setAttribute("user",user);
         return userMapper.updateById(user);
     }
 }

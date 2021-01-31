@@ -12,7 +12,6 @@ import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -105,12 +103,13 @@ public class OrderController {
 
     @GetMapping("/user/refundTicket/{order_id}")
     public String refundTicket(@PathVariable(value = "order_id") Integer order_id) {
+
         orderService.refundTicket(order_id);
         return "redirect:/user/ToOrderList";
     }
 
     /**
-     *
+     * 跳转到改签可选的车次页面
      *
      * @param order_id 要改签的订单编号
      * @param model 给页面传递参数
@@ -126,6 +125,16 @@ public class OrderController {
         model.addAttribute("order_id",order_id);
         return "user/change_ticket";
     }
+
+    /**
+     * 进行改签操作
+     *
+     * @param trips_id 改签选择的新车次编号
+     * @param order_id 原订单编号
+     * @author yong
+     * @date 2021/1/31 16:40
+     * @return java.lang.String
+     */
 
     @GetMapping("/user/changing_order")
     public String changing_order(@RequestParam("trips_id") Integer trips_id,

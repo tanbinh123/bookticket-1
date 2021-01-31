@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
         if(ordersList!=null&&ordersList.size()>0) {
             ordersList.forEach(order -> {
                 int trips_id=order.getOrder_trips_id();
-                Trips trips = tripsMapper.getOneByIdForOrder(trips_id);
+                Trips trips = tripsMapper.getOneByIdForOrder(trips_id);     //已逻辑删除的车次也会获取到
                 order.setOrder_train_name(trips.getTrips_train_name());     //获得列车名
 
                 Date date=trips.getTrips_start_time();
@@ -120,10 +120,10 @@ public class OrderServiceImpl implements OrderService {
         double new_trips_price;
         if(seat_level==1) {
             new_trips_price = new_trips.getTrips_first_seat_price();
-            tripsMapper.decrease_first_seat(new_trips.getTrips_id());
+            tripsMapper.decrease_first_seat(trips_id);
         } else {
             new_trips_price=new_trips.getTrips_second_seat_price();
-            tripsMapper.decrease_second_seat(new_trips.getTrips_id());
+            tripsMapper.decrease_second_seat(trips_id);
         }
 
         Orders new_order=old_order;

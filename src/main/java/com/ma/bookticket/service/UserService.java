@@ -30,7 +30,8 @@ public interface UserService {
     public boolean addOne(User user);
 
     /**
-     * 修改一个用户的信息
+     * 修改一个用户的信息,并将用户存储到session中
+     *
      * @param user 用户
      * @author yong
      * @date 2021/1/26 20:26
