@@ -36,11 +36,4 @@ public class Line implements Serializable {
      */
     private String line_end_station_name;
 
-    /**
-     * 线路用时
-     *
-     * @mbg.generated Sun Jan 17 23:53:25 CST 2021
-     */
-    private Time line_time;
-
 }
