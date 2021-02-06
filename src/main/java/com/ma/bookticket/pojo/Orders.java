@@ -96,7 +96,7 @@ public class Orders implements Serializable {
      *
      * @mbg.generated Sun Jan 24 00:23:40 CST 2021
      */
-    private Double order_price;
+    private Float order_price;
 
     //非数据库字段
     @TableField(exist = false)

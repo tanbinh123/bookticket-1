@@ -117,7 +117,7 @@ public class OrderServiceImpl implements OrderService {
 
         //新车次车票数量-1
         Trips new_trips = tripsService.getOneById(trips_id);
-        double new_trips_price;
+        Float new_trips_price;
         if(seat_level==1) {
             new_trips_price = new_trips.getTrips_first_seat_price();
             tripsMapper.decrease_first_seat(trips_id);

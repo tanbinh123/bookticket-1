@@ -67,14 +67,14 @@ public class Trips implements Serializable {
      *
      * @mbg.generated Sat Jan 23 21:36:14 CST 2021
      */
-    private Double trips_first_seat_price;
+    private Float trips_first_seat_price;
 
     /**
      * 二等座票价
      *
      * @mbg.generated Sat Jan 23 21:36:14 CST 2021
      */
-    private Double trips_second_seat_price;
+    private Float trips_second_seat_price;
 
     /**
      * 逻辑删除（0 未删除、1 删除）

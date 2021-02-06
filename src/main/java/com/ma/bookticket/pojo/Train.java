@@ -33,7 +33,7 @@ public class Train implements Serializable {
      *
      * @mbg.generated Sun Jan 17 23:51:46 CST 2021
      */
-    private Integer train_speed;
+    private Float train_speed;
 
     /**
      * 列车的座位数量

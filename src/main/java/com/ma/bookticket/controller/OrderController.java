@@ -71,7 +71,7 @@ public class OrderController {
                     break;
                 }
             }
-            double order_price=Double.parseDouble(seat_level.substring(index));
+            float order_price=Float.parseFloat(seat_level.substring(index));
             //获取坐席级别
             int seat_level_flag=1;
             if(seat_level.contains("二等座"))
