@@ -2,6 +2,7 @@ package com.ma.bookticket.utils;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import org.apache.shiro.SecurityUtils;
+import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -15,6 +16,7 @@ import java.awt.image.BufferedImage;
  * @author yong
  * @date 2021/1/18 16:27
  */
+@Component
 public class KaptchaUtils {
     public static void validateCode(HttpServletResponse response, DefaultKaptcha captchaProducer, String validateSessionKey) throws Exception{
         // Set to expire far in the past.
