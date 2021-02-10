@@ -52,6 +52,26 @@ public interface TripsService {
     public int decrease_second_seatnum(int trips_id);
 
     /**
+     * 用于退票改签操作使原车次的一等座座位数量+1
+     *
+     * @param trips_id 车次编号
+     * @author yong
+     * @date 2021/2/9 20:18
+     * @return int
+     */
+    public int increase_first_seatnum(int trips_id);
+
+    /**
+     * 用于退票改签操作使原车次的二等坐座位数量+1
+     *
+     * @param trips_id 车次编号
+     * @author yong
+     * @date 2021/2/9 20:18
+     * @return int
+     */
+    public int increase_secnd_seatnum(int trips_id);
+
+    /**
      * 查找特定线路编号和坐席级别相应座位数量大于0，且发车时间大于现在的车次，用于改签选择
      *
      * @param order_id 订单编号

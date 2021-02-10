@@ -1,14 +1,15 @@
 package com.ma.bookticket.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.ma.bookticket.mapper.LineMapper;
 import com.ma.bookticket.mapper.OrderMapper;
-import com.ma.bookticket.mapper.TripsMapper;
 import com.ma.bookticket.pojo.Line;
 import com.ma.bookticket.pojo.Orders;
 import com.ma.bookticket.pojo.Trips;
+import com.ma.bookticket.service.LineService;
 import com.ma.bookticket.service.OrderService;
 import com.ma.bookticket.service.TripsService;
+import com.ma.bookticket.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,103 +28,131 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
-    private TripsMapper tripsMapper;
-    @Autowired
-    private LineMapper lineMapper;
+    private LineService lineService;
     @Autowired
     private TripsService tripsService;
+    @Autowired
+    private RedisUtils redisUtils;
 
     @Override
     @Transactional
     public int saveOne(Orders order) {
         //生成订单
-        orderMapper.insert(order);
+        int count=orderMapper.insert(order);
         //减少车票数量
         int trips_id = order.getOrder_trips_id();
         int order_seat_level = order.getOrder_seat_level();
         if(order_seat_level==1)
-            tripsMapper.decrease_first_seat(trips_id);
+            tripsService.decrease_first_seatnum(trips_id);
         else
-            tripsMapper.decrease_second_seat(trips_id);
-        return 1;
+            tripsService.decrease_second_seatnum(trips_id);
+        if(count!=0) {
+            redisUtils.set("order"+order.getOrder_id(),order,7200);//存入缓存
+            redisUtils.del("orderList"+order.getOrder_user_id());
+        }
+
+        return count;
     }
 
     @Override
     public List<Orders> getOrderListByUser(int user_id) {
+        //从缓存中取出数据
+        String jsonString=(String) redisUtils.get("orderList" + user_id);
+        List<Orders> list = JSON.parseArray(jsonString, Orders.class);
+        if(list!=null&&list.size()!=0)
+            return list;
+        else {
+            List<Orders> ordersList=null;
+            ordersList = orderMapper.selectList(
+                    new QueryWrapper<Orders>().eq("order_user_id", user_id).orderByDesc("order_create_time"));
+            if(ordersList!=null&&ordersList.size()>0) {
+                ordersList.forEach(order -> {
+                    int trips_id=order.getOrder_trips_id();
+                    Trips trips = tripsService.getOneById(trips_id);     //已逻辑删除的车次也会获取到
+                    order.setOrder_train_name(trips.getTrips_train_name());     //获得列车名
 
-        List<Orders> ordersList = orderMapper.selectList(
-                new QueryWrapper<Orders>().eq("order_user_id", user_id).orderByDesc("order_create_time"));
-        if(ordersList!=null&&ordersList.size()>0) {
-            ordersList.forEach(order -> {
-                int trips_id=order.getOrder_trips_id();
-                Trips trips = tripsMapper.getOneByIdForOrder(trips_id);     //已逻辑删除的车次也会获取到
-                order.setOrder_train_name(trips.getTrips_train_name());     //获得列车名
+                    Date date=trips.getTrips_start_time();
+                    if(date.getTime()<=new Date().getTime()) {
+                        order.setOrder_status(1);                               //设置已发车
+                        orderMapper.updateById(order);
+                        redisUtils.del("order"+order.getOrder_id());
+                    }
 
-                Date date=trips.getTrips_start_time();
-                if(date.getTime()<=new Date().getTime()) {
-                    order.setOrder_status(1);                               //设置已发车
-                    orderMapper.updateById(order);
-                }
+                    order.setStart_date(date);                                  //设置发车日期
 
-                order.setStart_date(date);                                  //设置发车日期
+                    int line_id=trips.getTrips_line_id();
+                    Line line = lineService.getById(line_id);
+                    order.setStart_city(line.getLine_start_station_name());     //设置出发和达到城市
+                    order.setEnd_city(line.getLine_end_station_name());
 
-                int line_id=trips.getTrips_line_id();
-                Line line = lineMapper.selectById(line_id);
-                order.setStart_city(line.getLine_start_station_name());     //设置出发和达到城市
-                order.setEnd_city(line.getLine_end_station_name());
+                });
+                String orderList= JSON.toJSONString(ordersList);
+                redisUtils.set("orderList"+user_id,orderList,3600);   //存入缓存
 
-            });
+            }
+            return ordersList;
         }
-
-
-        return ordersList;
     }
 
     @Override
     @Transactional
     public int refundTicket(int order_id) {
-        Orders order = orderMapper.selectById(order_id);
+        redisUtils.del("order"+order_id);
+        Orders order = getOneById(order_id);
+        redisUtils.del("orderList"+order.getOrder_user_id());
         order.setOrder_status(2);
-        orderMapper.updateById(order);  //更改订单的状态为退票状态
+        int count=orderMapper.updateById(order);  //更改订单的状态为退票状态
 
         int trips_id=order.getOrder_trips_id();
         int seat_level=order.getOrder_seat_level();
         if(seat_level==1)                       //相应坐席车票数量+1
-            tripsMapper.increas_first_seat(trips_id);
+            tripsService.increase_first_seatnum(trips_id);
         else
-            tripsMapper.increas_second_seat(trips_id);
-        return 1;
+            tripsService.increase_secnd_seatnum(trips_id);
+
+        return count;
     }
 
     @Override
     public Orders getOneById(int order_id) {
-        return orderMapper.selectById(order_id);
+        Orders orders=(Orders)redisUtils.get("order"+order_id);
+        if(orders!=null)
+            return orders;
+        else {
+            orders=orderMapper.selectById(order_id);
+            if(orders!=null)
+                redisUtils.set("order"+order_id,orders);
+            return orders;
+        }
     }
 
     @Override
     @Transactional
     public int changing_order(int order_id, int trips_id) {
+        redisUtils.del("order"+order_id);       //淘汰缓存
         Orders old_order = getOneById(order_id);
+        redisUtils.del("orderList"+old_order.getOrder_user_id());
         int seat_level=old_order.getOrder_seat_level();
         old_order.setOrder_status(3);                   //原订单状态为已经改签状态
         orderMapper.updateById(old_order);              //修改
 
         //对原车次的车票数量+1
         Integer old_trips_id = old_order.getOrder_trips_id();
+        redisUtils.del("trips"+old_trips_id);
         if(seat_level==1)
-            tripsMapper.increas_first_seat(old_trips_id);
+            tripsService.increase_first_seatnum(old_trips_id);
         else
-            tripsMapper.increas_second_seat(old_trips_id);
+            tripsService.increase_secnd_seatnum(old_trips_id);
 
         //新车次车票数量-1
         Trips new_trips = tripsService.getOneById(trips_id);
         Float new_trips_price;
         if(seat_level==1) {
             new_trips_price = new_trips.getTrips_first_seat_price();
-            tripsMapper.decrease_first_seat(trips_id);
+            tripsService.decrease_first_seatnum(trips_id);
         } else {
             new_trips_price=new_trips.getTrips_second_seat_price();
-            tripsMapper.decrease_second_seat(trips_id);
+            tripsService.decrease_second_seatnum(trips_id);
         }
 
         Orders new_order=old_order;
@@ -133,7 +162,7 @@ public class OrderServiceImpl implements OrderService {
         new_order.setOrder_create_time(null);
         new_order.setOrder_update_time(null);
         new_order.setOrder_price(new_trips_price);
-        orderMapper.insert(new_order);
+        saveOne(new_order);
         return 1;
     }
 }
