@@ -67,7 +67,8 @@ spring:
 #查看执行的 sql 语句
 mybatis-plus:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #打印日志
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
     #解决带_ 的时候获取不到值,自动驼峰转换关闭
     map-underscore-to-camel-case: false
 

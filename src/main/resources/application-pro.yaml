@@ -1,0 +1,7 @@
+#日志配置
+logging:
+  level:
+    com.ma.bookticket.mapper: debug
+  config: classpath:log/logback-spring.xml
+  file:
+    path:

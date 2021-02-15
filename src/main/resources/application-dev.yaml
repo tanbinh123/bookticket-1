@@ -47,3 +47,11 @@ spring:
         # 连接池中的最小空闲连接
         min-idle: 0
 
+#日志配置
+logging:
+  level:
+    #打印sql语句
+    com.ma.bookticket.mapper: debug
+  config: classpath:log/logback-spring.xml
+  file:
+    path: F:/github/ticketLog
