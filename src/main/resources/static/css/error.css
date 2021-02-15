@@ -1,0 +1,10 @@
+﻿body{background:#fff;color:#D5D6E2;font-family:"Microsoft YaHei","Segoe UI","Lucida Grande",Helvetica,Arial,sans-serif}
+a{text-decoration:none}
+.box{width:1200px;margin:0 auto;overflow:hidden;position:relative}
+.main .error{width:100%;padding:500px 0 50px;background:url(../images/bgerror.png) no-repeat 50% 100px;text-align:center;color:#29AAE3}
+.main .error span{display:block;font-size:16px;margin:5px 0}
+.main .error span.error-con{font-size:24px}
+.main .error span.error-home{font-size:24px;font-weight:800;margin:10px 0}
+.main .error a{color:#29AAE3}
+
+
