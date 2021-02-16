@@ -10,6 +10,8 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,6 +44,8 @@ public class UserCenterController {
 
     //修改密码所需的验证码
     public static final String UPDATE_VEFICATION_CODE="update_vefication_code";
+
+    public static final Logger logger= LoggerFactory.getLogger(UserCenterController.class);
     /**
      * 随机生成六位验证码，并发送到指定邮箱
      * @param email 邮箱号
@@ -53,6 +57,8 @@ public class UserCenterController {
     @RequestMapping("/getUpdateCheckCode")
     @ResponseBody
     public String getUpdateCheckCode(@RequestParam String email,RedirectAttributes attributes) {
+
+        logger.info("---------------------邮箱号为"+email+"正在获取修改密码的验证码----------------------");
         if(!StringUtils.hasText(email)) {
             attributes.addFlashAttribute("message","验证码为空，请输入!!!");
             return "redirect:/user/register";
@@ -63,6 +69,7 @@ public class UserCenterController {
         String To=email;
         mailService.sendSimpleMail(To,Subject,Text);
         SecurityUtils.getSubject().getSession().setAttribute(UPDATE_VEFICATION_CODE,checkCode);//保存验证码以便验证
+        logger.info("-------------------修改密码验证码已经发送给"+email+"，验证码为"+checkCode+"--------------------");
         return "请查看邮箱收到的验证码！！！！";
     }
     /**
@@ -158,6 +165,7 @@ public class UserCenterController {
                             @RequestParam("password") String pasword,
                             RedirectAttributes attributes) {
 
+        logger.info("-------------进行密码修改，用户输入的密码为"+pasword+"输入的验证码为"+check_code+"----------------");
         // 获取 subject 认证主体
         Subject currentUser = SecurityUtils.getSubject() ;
         Session session = currentUser.getSession() ;
@@ -180,10 +188,16 @@ public class UserCenterController {
             success_message = "修改成功";
         }
         //带参数返回原页面
-        if (!message.equals(""))
+        if (!message.equals("")) {
+            logger.info("--------------------密码修改失败，原因为："+message+"-----------------------");
             attributes.addFlashAttribute("message", message);
-        if (!success_message.equals(""))
+        }
+
+        if (!success_message.equals("")) {
+            logger.info("---------------------密码修改成功！---------------------");
             attributes.addFlashAttribute("success_message", success_message);
+
+        }
         return "redirect:/user/ToUpdatePwd";
     }
 
@@ -206,6 +220,7 @@ public class UserCenterController {
                              @RequestParam("birth") String birth,
                              @RequestParam("sex") String sex ,Model model) throws ParseException {
 
+        logger.info("-----------完善个人信息，身份证号为"+identity_num+",手机号为"+phone+",生日为"+birth+",性别为"+sex+"-------------");
         // 获取 subject 认证主体
         Subject currentUser = SecurityUtils.getSubject() ;
         Session session = currentUser.getSession() ;
@@ -221,6 +236,7 @@ public class UserCenterController {
         user.setUser_sex(sex);
         userService.update(user);
         model.addAttribute("success_message", "修改成功！！！！");
+        logger.info("--------------------成功完善个人资料-------------------");
         return "/user/edit_info";
 
     }

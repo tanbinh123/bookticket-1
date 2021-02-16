@@ -9,6 +9,8 @@ import com.ma.bookticket.service.TripsService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +38,9 @@ public class HomeController {
     private TripsService tripsService;
     @Autowired
     private LineService lineService;
+
+    //Logger实例
+    public static final Logger logger= LoggerFactory.getLogger(HomeController.class);
     /**
      * 跳转到首页
      * @author yong
@@ -58,6 +63,7 @@ public class HomeController {
     @GetMapping("/getTrips")
     public String home(Model model,@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum) {
 
+        logger.info("--------------------------------获取车次列表-------------------------------");
         Session session= SecurityUtils.getSubject().getSession();
         //为了程序的严谨性，判断非空：
         if(pageNum == null){
@@ -97,6 +103,7 @@ public class HomeController {
                 model.addAttribute("pageInfo",pageInfo2);
                 session.setAttribute("date",date);
             }finally {
+                logger.info("------------------------清理 ThreadLocal 存储的分页参数,保证线程安全-------------------------");
                 PageHelper.clearPage(); //清理 ThreadLocal 存储的分页参数,保证线程安全
             }
         }
@@ -119,6 +126,7 @@ public class HomeController {
                            @RequestParam("EndStation") String end_station,
                            @RequestParam("date") String datestr, Model model) throws ParseException {
 
+        logger.info("-------------------------------------获取车次列表----------------------------");
         Session session= SecurityUtils.getSubject().getSession();
         List<Trips> someTrips;
         if(datestr!=null&&datestr.length()!=0) {
@@ -146,6 +154,7 @@ public class HomeController {
                         session.setAttribute("date",date);
                         session.setAttribute("pageInfo",pageInfo);
                     }finally {
+                        logger.info("-------------------------清理 ThreadLocal 存储的分页参数,保证线程安全-------------------------");
                         PageHelper.clearPage(); //清理 ThreadLocal 存储的分页参数,保证线程安全
                     }
                 }
@@ -166,6 +175,7 @@ public class HomeController {
     @GetMapping("/user/confirm_order/{trips_id}")
     public String toConfirmOrder(@PathVariable("trips_id") Integer trips_id, Model model ) {
 
+        logger.info("---------------------------跳转到确认订单页面，所订的车次号为"+trips_id+"-----------------------------");
         Trips trips = tripsService.getOneById(trips_id);
         if(trips!=null) {
             int line_id=trips.getTrips_line_id();

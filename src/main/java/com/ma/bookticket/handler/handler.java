@@ -2,6 +2,8 @@ package com.ma.bookticket.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -14,6 +16,8 @@ import java.util.Date;
 @Component
 public class handler implements MetaObjectHandler {
 
+    public static final Logger logger= LoggerFactory.getLogger(handler.class);
+
     /**
      * 插入时自动填充值
      * 订单创建时，获取当前时间为创建时间
@@ -25,6 +29,7 @@ public class handler implements MetaObjectHandler {
      */
     @Override
     public void insertFill(MetaObject metaObject) {
+        logger.info("----------------------插入时自动填充值-------------------");
         this.strictInsertFill(metaObject, "order_create_time", Date.class,new Date());
         this.strictInsertFill(metaObject, "trips_delete_flag", Integer.class,0);
     }
@@ -40,6 +45,7 @@ public class handler implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
+        logger.info("-----------------------订单更新时间更新时自动填充------------------------");
         this.strictUpdateFill(metaObject,"order_update_time", Date.class,new Date());
     }
 }

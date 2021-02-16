@@ -12,6 +12,8 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -25,6 +27,7 @@ public class DbRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
+    public static final Logger logger= LoggerFactory.getLogger(DbRealm.class);
     @Override
     public String getName() {
         return "DbRealm";
@@ -55,6 +58,7 @@ public class DbRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         // 根据 Token 获取用户名
         String username =(String)token.getPrincipal();
+        logger.info("-----------------------进行用户认证操作，用户名为："+username+"----------------------");
         // 根据用户名从数据库中查询该用户
         User user = userService.selecOneByname(username);
         if(user != null) {

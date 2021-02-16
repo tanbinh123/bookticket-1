@@ -2,11 +2,12 @@ package com.ma.bookticket.utils;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import org.apache.shiro.SecurityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 
@@ -18,6 +19,8 @@ import java.awt.image.BufferedImage;
  */
 @Component
 public class KaptchaUtils {
+    public static final Logger logger= LoggerFactory.getLogger(KaptchaUtils.class);
+
     public static void validateCode(HttpServletResponse response, DefaultKaptcha captchaProducer, String validateSessionKey) throws Exception{
         // Set to expire far in the past.
         response.setDateHeader("Expires", 0);
@@ -34,6 +37,7 @@ public class KaptchaUtils {
         // create the text for the image
         String capText = captchaProducer.createText();
 
+        logger.info("---------------------------登陆验证码为："+capText+"------------------------");
         // store the text in the session
         SecurityUtils.getSubject().getSession().setAttribute(validateSessionKey, capText);
 
@@ -48,6 +52,7 @@ public class KaptchaUtils {
             out.flush();
         } finally {
             out.close();
+            logger.info("-----------------------输出流已经关闭-----------------------");
         }
     }
 }

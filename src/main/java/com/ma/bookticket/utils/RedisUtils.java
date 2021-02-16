@@ -1,5 +1,7 @@
 package com.ma.bookticket.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ public class RedisUtils {
 
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
+    public static final Logger logger= LoggerFactory.getLogger(RedisUtils.class);
 
 // =============================common============================
     /**
@@ -37,6 +40,7 @@ public class RedisUtils {
             }
             return true;
         } catch (Exception e) {
+            logger.error("-------------指定缓存失效时间失败----------------",e);
             e.printStackTrace();
             return false;
         }
@@ -58,6 +62,7 @@ public class RedisUtils {
         try {
             return redisTemplate.hasKey(key);
         } catch (Exception e) {
+            logger.error("-------------判断key是否存在失败---------------",e);
             e.printStackTrace();
             return false;
         }
@@ -74,6 +79,7 @@ public class RedisUtils {
             } else {
                 redisTemplate.delete((Collection<String>) CollectionUtils.arrayToList(key));
             }
+            logger.info("-----------------删除缓存成后，缓存为"+key+"------------------");
         }
     }
     // ============================String=============================
@@ -96,6 +102,7 @@ public class RedisUtils {
             redisTemplate.opsForValue().set(key, value);
             return true;
         } catch (Exception e) {
+            logger.error("---------------设置缓存值失败，键为"+key+"值为："+value.toString()+"----------------",e);
             e.printStackTrace();
             return false;
         }
@@ -116,6 +123,8 @@ public class RedisUtils {
             }
             return true;
         } catch (Exception e) {
+            logger.error("---------------设置缓存值并设置时间失败，键为"+key+"值为："+value.toString()+
+                            "缓存时间为"+ time+"----------------",e);
             e.printStackTrace();
             return false;
         }
@@ -128,6 +137,7 @@ public class RedisUtils {
      */
     public long incr(String key, long delta) {
         if (delta < 0) {
+            logger.error("-----------------递增因子必须大于0-------------------");
             throw new RuntimeException("递增因子必须大于0");
         }
         return redisTemplate.opsForValue().increment(key, delta);
@@ -140,6 +150,7 @@ public class RedisUtils {
      */
     public long decr(String key, long delta) {
         if (delta < 0) {
+            logger.error("----------------递减因子必须大于0----------------");
             throw new RuntimeException("递减因子必须大于0");
         }
         return redisTemplate.opsForValue().increment(key, -delta);
@@ -173,6 +184,7 @@ public class RedisUtils {
             redisTemplate.opsForHash().putAll(key, map);
             return true;
         } catch (Exception e) {
+            logger.error("-----------设置hash值失败，键为"+key,",值为："+map.toString()+"--------------",e);
             e.printStackTrace();
             return false;
         }
@@ -192,6 +204,8 @@ public class RedisUtils {
             }
             return true;
         } catch (Exception e) {
+            logger.error("-----------设置hash值并设置缓存时间失败，键为"+key,",值为："+map.toString()+
+                            "过期时间为"+time+"--------------",e);
             e.printStackTrace();
             return false;
         }
@@ -208,6 +222,7 @@ public class RedisUtils {
             redisTemplate.opsForHash().put(key, item, value);
             return true;
         } catch (Exception e) {
+            logger.error("-------------向一张hash表中放入数据失败，键为"+key+"项为："+item+"值为："+value+"---------------",e);
             e.printStackTrace();
             return false;
         }
@@ -228,6 +243,8 @@ public class RedisUtils {
             }
             return true;
         } catch (Exception e) {
+            logger.error("-------------向一张hash表中放入数据并设置过期时间失败，键为"+key+"项为："+item+"值为："+value+
+                    "过期时间为："+time+"---------------",e);
             e.printStackTrace();
             return false;
         }
@@ -239,6 +256,7 @@ public class RedisUtils {
      */
     public void hdel(String key, Object... item) {
         redisTemplate.opsForHash().delete(key, item);
+        logger.info("-------------------删除hash表中的值,键为"+key+"项为："+item.toString()+"------------------");
     }
     /**
      * 判断hash表中是否有该项的值
@@ -257,6 +275,7 @@ public class RedisUtils {
      * @return
      */
     public double hincr(String key, String item, double by) {
+        logger.info("-------------hash递增,键为"+key+"项为："+item+"递增步长为"+by+"-------------------");
         return redisTemplate.opsForHash().increment(key, item, by);
     }
     /**
@@ -267,6 +286,7 @@ public class RedisUtils {
      * @return
      */
     public double hdecr(String key, String item, double by) {
+        logger.info("-------------hash递减,键为"+key+"项为："+item+"递减步长为"+by+"-------------------");
         return redisTemplate.opsForHash().increment(key, item, -by);
     }
     // ============================set=============================
@@ -279,6 +299,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForSet().members(key);
         } catch (Exception e) {
+            logger.error("-----------------根据key获取Set中的所有值失败，键为"+key+"-------------",e);
             e.printStackTrace();
             return null;
         }
@@ -293,6 +314,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForSet().isMember(key, value);
         } catch (Exception e) {
+            logger.error("--------------根据value从一个set中查询,是否存在(失败),键为"+key+"值为："+value+"----------------",e);
             e.printStackTrace();
             return false;
         }
@@ -307,6 +329,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForSet().add(key, values);
         } catch (Exception e) {
+            logger.error("-----------------将数据放入set缓存失败，键为"+key+"值为："+values.toString()+"----------------",e);
             e.printStackTrace();
             return 0;
         }
@@ -325,6 +348,8 @@ public class RedisUtils {
                 expire(key, time);
             return count;
         } catch (Exception e) {
+            logger.error("-----------------将数据放入set缓存并设置过期时间失败，键为"+key+"值为："+values.toString()+
+                    "过期时间为："+time+"----------------",e);
             e.printStackTrace();
             return 0;
         }
@@ -338,6 +363,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForSet().size(key);
         } catch (Exception e) {
+            logger.error("-------------------获取set缓存的长度失败,键为"+key+"---------------------",e);
             e.printStackTrace();
             return 0;
         }
@@ -353,6 +379,7 @@ public class RedisUtils {
             Long count = redisTemplate.opsForSet().remove(key, values);
             return count;
         } catch (Exception e) {
+            logger.error("---------------移除set集值为value的项，键为"+key+"，值为："+values.toString()+"-----------------",e);
             e.printStackTrace();
             return 0;
         }
@@ -369,6 +396,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForList().range(key, start, end);
         } catch (Exception e) {
+            logger.error("-------------获取list缓存的内容失败，键为："+key+"------------------");
             e.printStackTrace();
             return null;
         }
@@ -382,6 +410,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForList().size(key);
         } catch (Exception e) {
+            logger.error("---------------------获取list缓存的长度失败，键为："+key+"--------------------",e);
             e.printStackTrace();
             return 0;
         }
@@ -396,6 +425,7 @@ public class RedisUtils {
         try {
             return redisTemplate.opsForList().index(key, index);
         } catch (Exception e) {
+            logger.error("---------------------通过索引 获取list中的值，键为："+key+",索引为："+index+"--------------------",e);
             e.printStackTrace();
             return null;
         }
@@ -411,6 +441,7 @@ public class RedisUtils {
             redisTemplate.opsForList().rightPush(key, value);
             return true;
         } catch (Exception e) {
+            logger.error("----------------将list放入缓存失败，键为："+key+"值为："+value.toString()+"----------------",e);
             e.printStackTrace();
             return false;
         }
@@ -429,6 +460,7 @@ public class RedisUtils {
                 expire(key, time);
             return true;
         } catch (Exception e) {
+            logger.error("----------------将list放入缓存失败，键为："+key,",值为："+value+",过去时间为："+time+"--------------",e);
             e.printStackTrace();
             return false;
         }
@@ -444,6 +476,7 @@ public class RedisUtils {
             redisTemplate.opsForList().rightPushAll(key, value);
             return true;
         } catch (Exception e) {
+            logger.error("----------------将list放入缓存失败，键为："+key,",值为："+value+"--------------",e);
             e.printStackTrace();
             return false;
         }
@@ -463,6 +496,7 @@ public class RedisUtils {
                 expire(key, time);
             return true;
         } catch (Exception e) {
+            logger.error("----------------将list放入缓存失败，键为："+key,",值为："+value+",过去时间为："+time+"--------------",e);
             e.printStackTrace();
             return false;
         }
@@ -479,6 +513,7 @@ public class RedisUtils {
             redisTemplate.opsForList().set(key, index, value);
             return true;
         } catch (Exception e) {
+            logger.error("---------------------根据索引修改list中的某条数据失败，键为："+key+",索引为："+index+",值为："+value+"--------------------",e);
             e.printStackTrace();
             return false;
         }
@@ -495,6 +530,7 @@ public class RedisUtils {
             Long remove = redisTemplate.opsForList().remove(key, count, value);
             return remove;
         } catch (Exception e) {
+            logger.error("-------------移除N个值为value失败，键为："+key+"，值为："+value.toString()+"，个数为："+count+"------------------");
             e.printStackTrace();
             return 0;
         }

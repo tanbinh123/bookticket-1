@@ -13,6 +13,8 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -45,6 +47,7 @@ public class UserController {
     @Autowired
     private MailService mailService;
 
+    public static final Logger logger= LoggerFactory.getLogger(UserController.class);
 
     /**
      * 跳转到登陆界面
@@ -98,6 +101,8 @@ public class UserController {
                         @RequestParam String username,
                         @RequestParam String password,
                         RedirectAttributes attributes){
+
+        logger.info("------------------用户名为"+username+"的用户正在尝试登陆，输入的密码为"+password+"--------------------");
         // 根据用户名和密码创建 Token
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         // 获取 subject 认证主体
@@ -119,17 +124,21 @@ public class UserController {
                 // 所以这一步在调用login(token)方法时,它会走到xxRealm.doGetAuthenticationInfo()方法中,具体验证方式详见此方法
                 currentUser.login(token);
             } catch (UnknownAccountException e) {
+                logger.error("---------------用户"+username+"登陆失败，原因为：用户不存在--------------------",e);
                 token.clear();
                 message="用户不存在" ;
             } catch (IncorrectCredentialsException e) {
+                logger.error("-----------------用户"+username+"登陆失败，原因为：用户名或密码错误------------------",e);
                 token.clear();
                 message="用户名或密码错误" ;
             }
         }
         if(!message.equals("")) {
+            logger.info("--------------------用户"+username+"登陆失败-----------------------");
             attributes.addFlashAttribute("message",message);
             return "redirect:/login";
         }else {
+            logger.info("----------------------用户"+username+"成功登陆-----------------------");
             return "redirect:/" ;
         }
     }
@@ -150,6 +159,8 @@ public class UserController {
     public String register(@RequestParam String username,@RequestParam String password,
                            @RequestParam("email") String email,@RequestParam("verification_code") String verification_code,
                            RedirectAttributes attributes) {
+
+        logger.info("--------------用户"+username+"正在注册，注册密码为"+password+"输入邮箱号为"+email+"输入验证码为"+verification_code+"------------");
         String message="";  //提供辅助性信息
         String vefication_code=(String) SecurityUtils.getSubject().getSession().getAttribute(REGISTER_VEFICATION_CODE);
         boolean flag=true;
@@ -167,6 +178,7 @@ public class UserController {
             message="用户已注册";
         }
         if(!message.equals("")) {
+            logger.info("---------------用户"+username+"注册失败,原因为"+message+"--------------------");
             attributes.addFlashAttribute("message",message);
             return "redirect:/register";
         }
@@ -180,6 +192,7 @@ public class UserController {
         user.setUser_salt(salt);
         user.setUser_email(email);
         userService.addOne(user);
+        logger.info("---------------------用户"+username+"注册成功--------------------");
         return "redirect:/login";
     }
 
@@ -220,6 +233,7 @@ public class UserController {
         String To=email;
         mailService.sendSimpleMail(To,Subject,Text);
         session.setAttribute(REGISTER_VEFICATION_CODE,checkCode);//保存验证码以便验证
+        logger.info("--------------------发送给邮箱"+email+"的注册验证码为"+checkCode+"-----------------------");
         return "请查看邮箱收到的验证码！！！！";
     }
 }

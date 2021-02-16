@@ -9,6 +9,8 @@ import com.ma.bookticket.service.UserService;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +38,7 @@ public class OrderController {
     @Autowired
     private TripsService tripsService;
 
+    public static final Logger logger= LoggerFactory.getLogger(OrderController.class);
     /**
      * 预定车票，生成相应的订单，并且车票数量相应减少
      *
@@ -48,6 +51,8 @@ public class OrderController {
 
     @PostMapping("/user/add_order/{trips_id}")
     public String addOne(@PathVariable(value = "trips_id") Integer trips_id, HttpServletRequest request) {
+
+        logger.info("----------------------预定车次："+trips_id+"，生成相应的订单，并且车票数量相应减少-----------------------------");
 
         Session session= SecurityUtils.getSubject().getSession();
 
@@ -104,6 +109,7 @@ public class OrderController {
     @GetMapping("/user/refundTicket/{order_id}")
     public String refundTicket(@PathVariable(value = "order_id") Integer order_id) {
 
+        logger.info("---------------进行退票操作,订单号为"+order_id+"-----------------------");
         orderService.refundTicket(order_id);
         return "redirect:/user/ToOrderList";
     }
@@ -120,6 +126,8 @@ public class OrderController {
 
     @GetMapping("/user/toChangingTicket/{order_id}")
     public String toChangingTicket(@PathVariable(value = "order_id") Integer order_id, Model model) {
+
+        logger.info("------------------跳转到改签可选的车次页面,订单号为"+order_id+"---------------------");
         List<Trips> tripsList = tripsService.getChangingTrips(order_id);
         model.addAttribute("tripsList",tripsList);
         model.addAttribute("order_id",order_id);
@@ -139,6 +147,8 @@ public class OrderController {
     @GetMapping("/user/changing_order")
     public String changing_order(@RequestParam("trips_id") Integer trips_id,
                                  @RequestParam("order_id") Integer order_id ) {
+
+        logger.info("----------------进行改签操作,改签的订单号为"+order_id+"，选中改签的车次号为"+trips_id+"---------------");
         orderService.changing_order(order_id,trips_id);
         return "redirect:/user/ToOrderList";
     }
