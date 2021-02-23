@@ -1,12 +1,54 @@
 spring:
-  #设置数据库相关信息
+  #修改springboot默认数据源为Druid
   datasource:
+    # 连接池配置
     druid:
       driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://localhost:3306/book_ticket?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
       username: root
       password: admin
-
+      # 初始化大小，最小，最大
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      # 配置获取连接等待超时的时间，单位毫秒
+      max-wait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存时间
+      min-evictable-idle-time-millis: 300000
+      #测试连接
+      validation-query: SELECT 1 FROM sys_user
+      #申请连接的时候检测，建议配置为true，不影响性能，并且保证安全性
+      test-while-idle: true
+      #获取连接时执行检测，建议关闭，影响性能
+      test-on-borrow: false
+      #归还连接时执行检测，建议关闭，影响性能
+      test-on-return: false
+      # 打开 PSCache，并且指定每个连接上 PSCache 的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      # 配置监控统计拦截的 Filter，去掉后监控界面 SQL 无法统计，wall 用于防火墙，stat:监控统计  log4j:日志
+      filters: stat,wall,log4j
+      # 通过 connection-properties 属性打开 mergeSql 功能；慢 SQL 记录
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      # 配置 DruidStatFilter
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: .js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*
+      # 配置 DruidStatViewServlet
+      stat-view-servlet:
+        url-pattern: /druid/*
+        # IP 白名单，没有配置或者为空，则允许所有访问
+        allow: 127.0.0.1
+        # IP 黑名单，若白名单也存在，则优先使用
+        deny: 192.168.31.253
+        # 禁用 HTML 中 Reset All 按钮
+        reset-enable: false
+        # 登录用户名/密码
+        login-username: root
+        login-password: 123
   #thymeleaf设置缓存为false,方便修改页面
   thymeleaf:
     cache: false
