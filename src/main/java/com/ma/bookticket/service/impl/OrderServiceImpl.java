@@ -1,5 +1,6 @@
 package com.ma.bookticket.service.impl;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ma.bookticket.mapper.OrderMapper;
@@ -11,8 +12,12 @@ import com.ma.bookticket.service.OrderService;
 import com.ma.bookticket.service.TripsService;
 import com.ma.bookticket.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Date;
 import java.util.List;
@@ -33,22 +38,31 @@ public class OrderServiceImpl implements OrderService {
     private TripsService tripsService;
     @Autowired
     private RedisUtils redisUtils;
+    @Autowired
+    private DataSourceTransactionManager transactionManager;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public int saveOne(Orders order) {
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setName("订票操作！");
+        transactionDefinition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = transactionManager.getTransaction(transactionDefinition);
+
         //生成订单
         int count=orderMapper.insert(order);
         //减少车票数量
         int trips_id = order.getOrder_trips_id();
         int order_seat_level = order.getOrder_seat_level();
         if(order_seat_level==1)
-            tripsService.decrease_first_seatnum(trips_id);
+            count+=tripsService.decrease_first_seatnum(trips_id);
         else
-            tripsService.decrease_second_seatnum(trips_id);
-        if(count!=0) {
+            count+=tripsService.decrease_second_seatnum(trips_id);
+        if(count==2) {
             redisUtils.set("order"+order.getOrder_id(),order,7200);//存入缓存
             redisUtils.del("orderList"+order.getOrder_user_id());
+        }else {
+            transactionManager.rollback(status);//进行回滚
         }
 
         return count;
@@ -95,8 +109,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public int refundTicket(int order_id) {
+
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setName("退票操作！");
+        transactionDefinition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = transactionManager.getTransaction(transactionDefinition);
+
         redisUtils.del("order"+order_id);
         Orders order = getOneById(order_id);
         redisUtils.del("orderList"+order.getOrder_user_id());
@@ -106,10 +126,11 @@ public class OrderServiceImpl implements OrderService {
         int trips_id=order.getOrder_trips_id();
         int seat_level=order.getOrder_seat_level();
         if(seat_level==1)                       //相应坐席车票数量+1
-            tripsService.increase_first_seatnum(trips_id);
+            count+=tripsService.increase_first_seatnum(trips_id);
         else
-            tripsService.increase_secnd_seatnum(trips_id);
-
+            count+=tripsService.increase_secnd_seatnum(trips_id);
+        if(count!=2)
+            transactionManager.rollback(status);    //进行回滚
         return count;
     }
 
@@ -127,32 +148,38 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public int changing_order(int order_id, int trips_id) {
+
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setName("改签操作！");
+        transactionDefinition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = transactionManager.getTransaction(transactionDefinition);
+
         redisUtils.del("order"+order_id);       //淘汰缓存
         Orders old_order = getOneById(order_id);
         redisUtils.del("orderList"+old_order.getOrder_user_id());
         int seat_level=old_order.getOrder_seat_level();
         old_order.setOrder_status(3);                   //原订单状态为已经改签状态
-        orderMapper.updateById(old_order);              //修改
+        int count =orderMapper.updateById(old_order);              //修改
 
         //对原车次的车票数量+1
         Integer old_trips_id = old_order.getOrder_trips_id();
         redisUtils.del("trips"+old_trips_id);
         if(seat_level==1)
-            tripsService.increase_first_seatnum(old_trips_id);
+            count+=tripsService.increase_first_seatnum(old_trips_id);
         else
-            tripsService.increase_secnd_seatnum(old_trips_id);
+            count+=tripsService.increase_secnd_seatnum(old_trips_id);
 
         //新车次车票数量-1
         Trips new_trips = tripsService.getOneById(trips_id);
         Float new_trips_price;
         if(seat_level==1) {
             new_trips_price = new_trips.getTrips_first_seat_price();
-            tripsService.decrease_first_seatnum(trips_id);
+            count+=tripsService.decrease_first_seatnum(trips_id);
         } else {
             new_trips_price=new_trips.getTrips_second_seat_price();
-            tripsService.decrease_second_seatnum(trips_id);
+            count+=tripsService.decrease_second_seatnum(trips_id);
         }
 
         Orders new_order=old_order;
@@ -162,7 +189,9 @@ public class OrderServiceImpl implements OrderService {
         new_order.setOrder_create_time(null);
         new_order.setOrder_update_time(null);
         new_order.setOrder_price(new_trips_price);
-        saveOne(new_order);
+        count+=saveOne(new_order);
+        if(count!=5)
+            transactionManager.rollback(status);        //进行回滚
         return 1;
     }
 }

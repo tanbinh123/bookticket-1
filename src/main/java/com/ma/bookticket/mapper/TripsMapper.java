@@ -27,7 +27,7 @@ public interface TripsMapper extends BaseMapper<Trips> {
      * @date 2021/1/30 14:23
      * @return int
      */
-    @Update("update trips set trips_first_seat_num=trips_first_seat_num-1 where trips_id=#{trips_id} and trips_first_seat_num-1>0 ")
+    @Update("update trips set trips_first_seat_num=trips_first_seat_num-1 where trips_id=#{trips_id} and trips_first_seat_num-1>=0 ")
     public int decrease_first_seat(int trips_id);
 
     /**
@@ -38,7 +38,7 @@ public interface TripsMapper extends BaseMapper<Trips> {
      * @date 2021/1/30 14:23
      * @return int
      */
-    @Update("update trips set trips_second_seat_num=trips_second_seat_num-1 where trips_id=#{trips_id} and trips_second_seat_num-1>0 ")
+    @Update("update trips set trips_second_seat_num=trips_second_seat_num-1 where trips_id=#{trips_id} and trips_second_seat_num-1>=0 ")
     public int decrease_second_seat(int trips_id);
 
     /**

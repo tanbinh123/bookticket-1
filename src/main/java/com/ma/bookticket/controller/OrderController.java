@@ -93,7 +93,7 @@ public class OrderController {
             order.setOrder_trips_id(trips_id);
             order.setOrder_user_id(user_id);
 
-            if(orderService.saveOne(order)==1);     //生成订单并减少车座数量
+            if(orderService.saveOne(order)==2);     //生成订单并减少车座数量
             return "redirect:/user/ToUserCenter";
         }
         return "/default/index";
