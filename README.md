@@ -6,9 +6,9 @@
 
 此项目为线上火车票订票系统，是个人大学毕设，所用知识比较基础简单，适合新手借鉴。项目基于springboot，JDK1.8.0+,Mysql 5.7，Thtmeleaf，MyBatis Plus，redis开发。它的后台管理项目在这-->https://github.com/Yong-Ma/bookticket-admin
 
-###功能模块
+### 功能模块
 
--------
+
 
 
 
