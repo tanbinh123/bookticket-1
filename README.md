@@ -4,7 +4,7 @@
 
 ---------------
 
-此项目为线上火车票订票系统，是个人大学毕设，所用知识比较基础简单，适合新手借鉴。项目基于springboot，JDK1.8.0+,Mysql 5.7，Thtmeleaf，MyBatis Plus，redis开发。它的后台管理项目在这-->https://github.com/Yong-Ma/bookticket-admin
+此项目为线上火车票订票系统，是个人大学毕设，所用知识比较基础简单，适合新手借鉴。项目基于springboot，JDK1.8.0+,Mysql 5.7，Thymeleaf，MyBatis Plus，redis，shiro开发。它的后台管理项目在这-->https://github.com/Yong-Ma/bookticket-admin
 
 ### 功能模块
 
@@ -29,7 +29,7 @@
 （7）用户管理：管理员有权对一些用户的信息查阅和管理。
 
 （8）车次信息管理：对车次的线路、列车型号、起始时间、到达时间等信息进行管理。
- 
+
 （9）订单查询：管理员可查询用户的订单信息。
 
 （10）线路管理：对线路的起始点、终点、距离等信息进行管理。
