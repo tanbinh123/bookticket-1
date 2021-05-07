@@ -4,6 +4,7 @@ import ch.qos.logback.core.encoder.EchoEncoder;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ma.bookticket.mapper.OrderMapper;
+import com.ma.bookticket.mapper.TripsMapper;
 import com.ma.bookticket.pojo.Line;
 import com.ma.bookticket.pojo.Orders;
 import com.ma.bookticket.pojo.Trips;
@@ -32,6 +33,8 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private TripsMapper tripsMapper;
     @Autowired
     private LineService lineService;
     @Autowired
@@ -82,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
             if(ordersList!=null&&ordersList.size()>0) {
                 ordersList.forEach(order -> {
                     int trips_id=order.getOrder_trips_id();
-                    Trips trips = tripsService.getOneById(trips_id);     //已逻辑删除的车次也会获取到
+                    Trips trips = tripsMapper.getOneByIdForOrder(trips_id);     //已逻辑删除的车次也会获取到
                     order.setOrder_train_name(trips.getTrips_train_name());     //获得列车名
 
                     Date date=trips.getTrips_start_time();
