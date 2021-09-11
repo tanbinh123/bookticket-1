@@ -8,7 +8,7 @@ server:
       #最大线程数
       max: 200
 
-#设置激活的启动环z境，这里为dev
+#设置激活的启动环境，这里为dev
 spring:
   profiles:
     active: dev
