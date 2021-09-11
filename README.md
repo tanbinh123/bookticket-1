@@ -125,6 +125,42 @@ logging:
 
 7.输入用户名GDPU,密码GDPU进行登陆
 
+#### Docker部署
+
+1.编写Dockerfile文件
+
+```
+# jdk
+FROM openjdk:11.0.13-slim-buster
+MAINTAINER mzy
+# 拷贝jar包
+COPY target/*.jar /app.jar
+# 容器启动时执行的命令
+ENTRYPOINT ["java","-jar","app.jar"]
+```
+
+2.修改mysql和redis的访问地址为容器所处的宿主机,
+
+- 如果是linux平台,一般为172.17.0.1(宿主机在与容器同一局域网的IP地址一般是docker0对应的IP地址段的首个地址)
+- 如果是mac电脑,则修改为host.docker.internal
+  - Docker For Mac的Docker Daemon是运行于虚拟机(xhyve)中的, 而不是像Linux上那样作为进程运行于宿主机，因此Docker For Mac没有docker0网桥
+  - docker for mac 的容器里可以通过 docker.for.mac.host.internal 域名直接访问宿主机服务
+
+3.运行Dockerfile,生成镜像,然后运行
+
+- 可以通过idea的docker插件进行配置
+
+- 也可以通过docker命令进行操作,记得做端口映射
+
+  ```
+  #生成镜像
+  docker build -t bookticker:1.0  .
+  #容器运行
+  docker run -d -p 8087:8087 --name bookticker bookticker:1.0
+  ```
+
+  ![dockerTest](/Users/mzy/IdeaProjects/bookticket/readme/dockerTest.png)
+
 #### 项目演示
 
 -----------
