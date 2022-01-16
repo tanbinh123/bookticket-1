@@ -1,0 +1,60 @@
+2021-10-23 20:48:40.613 [http-nio-8087-exec-9] DEBUG com.ma.bookticket.mapper.UserMapper.selectOne - ==>  Preparing: SELECT user_id,user_login_name,user_password,user_salt,user_sex,user_phone,user_email,user_birth,user_identity_num FROM user WHERE (user_login_name = ?)
+2021-10-23 20:48:40.613 [http-nio-8087-exec-8] DEBUG com.ma.bookticket.mapper.UserMapper.selectOne - ==>  Preparing: SELECT user_id,user_login_name,user_password,user_salt,user_sex,user_phone,user_email,user_birth,user_identity_num FROM user WHERE (user_login_name = ?)
+2021-10-23 20:48:40.663 [http-nio-8087-exec-9] DEBUG com.ma.bookticket.mapper.UserMapper.selectOne - ==> Parameters: GDPU(String)
+2021-10-23 20:48:40.663 [http-nio-8087-exec-8] DEBUG com.ma.bookticket.mapper.UserMapper.selectOne - ==> Parameters: GDPU(String)
+2021-10-23 20:48:40.713 [http-nio-8087-exec-9] DEBUG com.ma.bookticket.mapper.UserMapper.selectOne - <==      Total: 1
+2021-10-23 20:48:40.713 [http-nio-8087-exec-8] DEBUG com.ma.bookticket.mapper.UserMapper.selectOne - <==      Total: 1
+2021-10-23 20:48:44.023 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.selectList - ==>  Preparing: SELECT order_id,order_user_id,order_trips_id,order_create_time,order_update_time,order_status,order_passenger_name,order_linkman_name,order_linkman_phone,order_passenger_identity_num,order_seat_level,order_price FROM orders WHERE (order_user_id = ?) ORDER BY order_create_time DESC
+2021-10-23 20:48:44.026 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.selectList - ==> Parameters: 25(Integer)
+2021-10-23 20:48:44.043 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.selectList - <==      Total: 8
+2021-10-23 20:48:44.045 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==>  Preparing: select * from trips where trips_id=?
+2021-10-23 20:48:44.047 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==> Parameters: 3(Integer)
+2021-10-23 20:48:44.054 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - <==      Total: 1
+2021-10-23 20:48:44.060 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==>  Preparing: UPDATE orders SET order_user_id=?, order_trips_id=?, order_create_time=?, order_update_time=?, order_status=?, order_passenger_name=?, order_linkman_name=?, order_linkman_phone=?, order_passenger_identity_num=?, order_seat_level=?, order_price=? WHERE order_id=?
+2021-10-23 20:48:44.065 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==> Parameters: 25(Integer), 3(Integer), 2021-02-24 22:25:23.0(Timestamp), 2021-09-11 15:27:59.0(Timestamp), 1(Integer), 马先生(String), 马先生(String), 15914967057(String), 440582199806065921(String), 1(Integer), 400.0(Float), 2257(Integer)
+2021-10-23 20:48:44.074 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - <==    Updates: 1
+2021-10-23 20:48:44.077 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.LineMapper.selectById - ==>  Preparing: SELECT line_id,line_start_station_name,line_end_station_name FROM line WHERE line_id=?
+2021-10-23 20:48:44.078 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.LineMapper.selectById - ==> Parameters: 4(Integer)
+2021-10-23 20:48:44.083 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.LineMapper.selectById - <==      Total: 1
+2021-10-23 20:48:44.086 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==>  Preparing: select * from trips where trips_id=?
+2021-10-23 20:48:44.087 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==> Parameters: 3(Integer)
+2021-10-23 20:48:44.088 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - <==      Total: 1
+2021-10-23 20:48:44.089 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==>  Preparing: UPDATE orders SET order_user_id=?, order_trips_id=?, order_create_time=?, order_update_time=?, order_status=?, order_passenger_name=?, order_linkman_name=?, order_linkman_phone=?, order_passenger_identity_num=?, order_seat_level=?, order_price=? WHERE order_id=?
+2021-10-23 20:48:44.089 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==> Parameters: 25(Integer), 3(Integer), 2021-02-24 01:15:00.0(Timestamp), 2021-02-24 01:15:03.0(Timestamp), 1(Integer), 冲(String), 马先生(String), 15914967057(String), 440582199806065917(String), 1(Integer), 400.0(Float), 2256(Integer)
+2021-10-23 20:48:44.090 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - <==    Updates: 1
+2021-10-23 20:48:44.110 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==>  Preparing: select * from trips where trips_id=?
+2021-10-23 20:48:44.110 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==> Parameters: 29(Integer)
+2021-10-23 20:48:44.112 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - <==      Total: 1
+2021-10-23 20:48:44.113 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==>  Preparing: UPDATE orders SET order_user_id=?, order_trips_id=?, order_create_time=?, order_update_time=?, order_status=?, order_passenger_name=?, order_linkman_name=?, order_linkman_phone=?, order_passenger_identity_num=?, order_seat_level=?, order_price=? WHERE order_id=?
+2021-10-23 20:48:44.114 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==> Parameters: 25(Integer), 29(Integer), 2021-02-24 01:14:53.0(Timestamp), 2021-02-24 01:15:00.0(Timestamp), 1(Integer), 冲(String), 马先生(String), 15914967057(String), 440582199806065917(String), 1(Integer), 888.8(Float), 2255(Integer)
+2021-10-23 20:48:44.115 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - <==    Updates: 1
+2021-10-23 20:48:44.116 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==>  Preparing: select * from trips where trips_id=?
+2021-10-23 20:48:44.116 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==> Parameters: 28(Integer)
+2021-10-23 20:48:44.117 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - <==      Total: 1
+2021-10-23 20:48:44.118 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==>  Preparing: UPDATE orders SET order_user_id=?, order_trips_id=?, order_create_time=?, order_update_time=?, order_status=?, order_passenger_name=?, order_linkman_name=?, order_linkman_phone=?, order_passenger_identity_num=?, order_seat_level=?, order_price=? WHERE order_id=?
+2021-10-23 20:48:44.118 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==> Parameters: 25(Integer), 28(Integer), 2021-02-24 01:14:38.0(Timestamp), 2021-02-24 01:14:41.0(Timestamp), 1(Integer), 马先生(String), 马先生(String), 15914967057(String), 440582199806065921(String), 1(Integer), 600.5(Float), 2254(Integer)
+2021-10-23 20:48:44.120 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - <==    Updates: 1
+2021-10-23 20:48:44.121 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==>  Preparing: select * from trips where trips_id=?
+2021-10-23 20:48:44.121 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==> Parameters: 29(Integer)
+2021-10-23 20:48:44.122 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - <==      Total: 1
+2021-10-23 20:48:44.123 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==>  Preparing: UPDATE orders SET order_user_id=?, order_trips_id=?, order_create_time=?, order_update_time=?, order_status=?, order_passenger_name=?, order_linkman_name=?, order_linkman_phone=?, order_passenger_identity_num=?, order_seat_level=?, order_price=? WHERE order_id=?
+2021-10-23 20:48:44.123 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==> Parameters: 25(Integer), 29(Integer), 2021-02-23 23:27:56.0(Timestamp), 2021-02-23 23:27:59.0(Timestamp), 1(Integer), 冲(String), 马先生(String), 15914967057(String), 440582199806065917(String), 2(Integer), 600.8(Float), 2253(Integer)
+2021-10-23 20:48:44.124 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - <==    Updates: 1
+2021-10-23 20:48:44.125 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==>  Preparing: select * from trips where trips_id=?
+2021-10-23 20:48:44.125 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==> Parameters: 3(Integer)
+2021-10-23 20:48:44.126 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - <==      Total: 1
+2021-10-23 20:48:44.127 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==>  Preparing: UPDATE orders SET order_user_id=?, order_trips_id=?, order_create_time=?, order_update_time=?, order_status=?, order_passenger_name=?, order_linkman_name=?, order_linkman_phone=?, order_passenger_identity_num=?, order_seat_level=?, order_price=? WHERE order_id=?
+2021-10-23 20:48:44.128 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==> Parameters: 25(Integer), 3(Integer), 2021-02-23 22:55:41.0(Timestamp), 2021-02-23 23:27:52.0(Timestamp), 1(Integer), 冲(String), 马先生(String), 15914967057(String), 440582199806065917(String), 2(Integer), 300.5(Float), 1753(Integer)
+2021-10-23 20:48:44.129 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - <==    Updates: 1
+2021-10-23 20:48:44.131 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==>  Preparing: select * from trips where trips_id=?
+2021-10-23 20:48:44.131 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==> Parameters: 3(Integer)
+2021-10-23 20:48:44.132 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - <==      Total: 1
+2021-10-23 20:48:44.133 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==>  Preparing: UPDATE orders SET order_user_id=?, order_trips_id=?, order_create_time=?, order_update_time=?, order_status=?, order_passenger_name=?, order_linkman_name=?, order_linkman_phone=?, order_passenger_identity_num=?, order_seat_level=?, order_price=? WHERE order_id=?
+2021-10-23 20:48:44.133 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==> Parameters: 25(Integer), 3(Integer), 2021-02-23 22:55:41.0(Timestamp), 2021-02-23 23:27:56.0(Timestamp), 1(Integer), 冲(String), 马先生(String), 15914967057(String), 440582199806065917(String), 2(Integer), 300.5(Float), 1755(Integer)
+2021-10-23 20:48:44.134 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - <==    Updates: 1
+2021-10-23 20:48:44.137 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==>  Preparing: select * from trips where trips_id=?
+2021-10-23 20:48:44.137 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - ==> Parameters: 3(Integer)
+2021-10-23 20:48:44.138 [http-nio-8087-exec-2] DEBUG c.m.b.mapper.TripsMapper.getOneByIdForOrder - <==      Total: 1
+2021-10-23 20:48:44.139 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==>  Preparing: UPDATE orders SET order_user_id=?, order_trips_id=?, order_create_time=?, order_update_time=?, order_status=?, order_passenger_name=?, order_linkman_name=?, order_linkman_phone=?, order_passenger_identity_num=?, order_seat_level=?, order_price=? WHERE order_id=?
+2021-10-23 20:48:44.140 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - ==> Parameters: 25(Integer), 3(Integer), 2021-02-23 22:55:41.0(Timestamp), 2021-02-23 23:28:00.0(Timestamp), 1(Integer), 冲(String), 马先生(String), 15914967057(String), 440582199806065917(String), 2(Integer), 300.5(Float), 1773(Integer)
+2021-10-23 20:48:44.141 [http-nio-8087-exec-2] DEBUG com.ma.bookticket.mapper.OrderMapper.updateById - <==    Updates: 1
